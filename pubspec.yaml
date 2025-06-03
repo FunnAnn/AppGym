@@ -35,6 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   table_calendar: ^3.2.0
+  flutter_signin_button: ^2.0.0
+  font_awesome_flutter: ^9.2.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +69,17 @@ flutter:
     - assets/images/weight.png
     - assets/images/height.png
     - assets/images/logo.jpg
+    - assets/images/plan_weight_loss.jpg
+    - assets/images/plan_sharp_body.jpg
+    - assets/images/plan_perfect_butt.jpg
+    - assets/images/plan_six_packs.jpg
+    - assets/images/plan_muscle_gain.jpg
+    - assets/images/plan_big_arms.jpg
+    - assets/images/plan_wide_back.jpg
+    - assets/images/plan_strong_chest.jpg
+    - assets/images/gym.png
+    - assets/images/home.png
+    - assets/images/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

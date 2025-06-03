@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -25,98 +26,135 @@ class LoginScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
-                  // Tiêu đề
+                  const Spacer(), // Đẩy tiêu đề xuống giữa
+
+                  // Tiêu đề BodyShape với RichText
                   RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                      ),
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'FITNESS ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          text: 'Body',
+                          style: TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.pinkTheme, // Đổi thành màu của bạn
+                          ),
                         ),
                         TextSpan(
-                          text: 'ONLINE',
-                          style: TextStyle(fontWeight: FontWeight.normal),
+                          text: 'Shape',
+                          style: const TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
 
-                  // Text "Đăng nhập bằng"
-                  const Text(
-                    'Sign in with',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  const Spacer(), // Đẩy phần đăng nhập xuống dưới
 
-                  const SizedBox(height: 20),
-
-                  // Nút đăng nhập Apple
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(color: Colors.white, Icons.apple, size: 24),
-                      label: const Text(
-                        'Sign in with Apple',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  // Căn giữa các nút đăng nhập
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Sign in with',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                      const SizedBox(height: 20),
+                      // Nút đăng nhập Apple
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(color: Colors.white, Icons.apple, size: 24),
+                          label: const Text(
+                            'Sign in with Apple',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
                         ),
-                        textStyle: const TextStyle(fontSize: 16),
                       ),
-                      onPressed: () {},
-                    ),
-                  ),
 
-                  const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                  // Nút đăng nhập Facebook
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(color: Colors.white,Icons.facebook, size: 24),
-                      label: const Text(
-                        'Sign in with Facebook',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3b5998), // màu Facebook
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                      // Nút đăng nhập Facebook
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(color: Colors.white, Icons.facebook, size: 24),
+                          label: const Text(
+                            'Sign in with Facebook',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF3b5998),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
                         ),
-                        textStyle: const TextStyle(fontSize: 16),
                       ),
-                      onPressed: () {},
-                    ),
+
+                      const SizedBox(height: 12),
+
+                      // Nút đăng nhập Google
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: Image.asset(
+                            'assets/images/google_logo.png', // Đường dẫn tới file ảnh Google logo
+                            height: 24,
+                            width: 24,
+                          ),
+                          label: const Text(
+                            'Sign in with Google',
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Text đăng nhập/đăng ký email
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý nhấn vào
+                        },
+                        child: const Text(
+                          'Sign in/Register with email address',
+                          style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(height: 24),
-
-                  // Text đăng nhập/đăng ký email
-                  GestureDetector(
-                    onTap: () {
-                      // Xử lý nhấn vào
-                    },
-                    child: const Text(
-                      'Sign in/Register with email address',
-                      style: TextStyle(
-                        color: Colors.white,
-                        decoration: TextDecoration.underline,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
+                  const Spacer(), // Đẩy phần dưới xuống
 
                   // Nút BỎ QUA
                   SizedBox(

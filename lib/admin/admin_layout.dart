@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'dashboard.dart';
 
 class AdminLayout extends StatelessWidget {
-  const AdminLayout({Key? key}) : super(key: key);
+  final Widget body;
+  const AdminLayout({Key? key, required this.body}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +129,7 @@ class AdminLayout extends StatelessWidget {
       appBar: AppBar(
         title: Text('Admin Panel'),
       ),
-      body: Center(
-        child: Text('Welcome to the Admin Panel!'),
-      ),
+      body: body,
     );
   }
 }

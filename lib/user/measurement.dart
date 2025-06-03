@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'bottom_main/workout_plan.dart';
 
 class MeasurementScreen extends StatefulWidget {
   const MeasurementScreen({super.key});
@@ -169,7 +170,7 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () {
-                  // Xử lý khi bấm "Tiếp tục"
+                  Navigator.pushReplacementNamed(context, '/workout');
                 },
                 child: const Text(
                   'CONTINUE',
