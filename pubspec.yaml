@@ -37,17 +37,52 @@ dependencies:
   table_calendar: ^3.2.0
   flutter_signin_button: ^2.0.0
   font_awesome_flutter: ^9.2.0
+  lottie: ^3.3.1
+  video_player: ^2.8.2
+  # File picker plugin (latest version compatible with Flutter)
+  file_picker: ^10.2.0
+  
+  # Image picker plugin (latest stable version)
+  image_picker: ^0.8.6+4
+  
+  # Mime type detection (latest stable version)
+  mime: ^1.0.6
+  
+  # SharedPreferences for storing user data
+  shared_preferences: ^2.3.3
+  
+  # JWT decode
+  dart_jsonwebtoken: ^3.2.0
+  
+  # Google Generative AI plugin (latest version you have)
+  google_generative_ai: ^0.4.7
+  
+  # Dotted border plugin (latest stable version)
+  dotted_border: ^2.1.0
+  
+  # Custom sliding segmented control (latest stable version)
+  custom_sliding_segmented_control: ^1.8.5
+  
+  # Flutter flip card plugin (latest stable version)
+  flutter_flip_card: ^0.0.6
+
+  http: ^1.1.0
+  google_sign_in: ^6.2.1
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -80,6 +115,43 @@ flutter:
     - assets/images/gym.png
     - assets/images/home.png
     - assets/images/google_logo.png
+    - assets/images/equipment1.png
+    - assets/images/equipment2.png
+    - assets/images/weightlosslevel1.png
+    - assets/images/weightlosslevel2.png
+    - assets/images/weightlosslevel3.png
+    - assets/images/weightlosslevel4.png
+    - assets/images/jump_rope.png
+    - assets/images/dumbbell.png
+    - assets/images/TRX.png
+    - assets/images/bench_triceps_dips.png
+    - assets/images/biceps_curl_with_resistance_band.png
+    - assets/images/flutter_kicks.png
+    - assets/images/push_ups.png
+    - assets/images/chest_stretch.png
+    - assets/images/shoulder_stretch.png
+    - assets/images/triceps_stretch.png
+    - assets/images/abdominal_lower_back_stretch.png
+    - assets/images/male_bg.jpg
+    - assets/images/female_bg.jpg
+    - assets/images/age.png
+    - assets/images/icon_app.jpg
+
+    - assets/animation/jumprope.json
+    
+    - assets/videos/jump_rope.mp4
+    - assets/videos/dumbbell.mp4
+    - assets/videos/trx.mp4
+    - assets/videos/bench_triceps_dips.mp4
+    - assets/videos/biceps_curl_with_band.mp4
+    - assets/videos/flutter_kicks.mp4
+    - assets/videos/push_ups.mp4
+    - assets/videos/chest_stretch.mp4
+    - assets/videos/shoulder_stretch.mp4
+    - assets/videos/triceps_stretch.mp4
+    - assets/videos/abdominal_lower_back_stretch.mp4
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -106,3 +178,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon_app.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/icon_app.png"

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'bottom.dart';
-import '../choose_location.dart';
+import '../workout/choose_location.dart';
 import '../../theme/app_colors.dart';
+import '../../api_service/auth_service.dart';
 
 class WorkoutPlanScreen extends StatefulWidget {
   const WorkoutPlanScreen({super.key});
@@ -11,13 +13,67 @@ class WorkoutPlanScreen extends StatefulWidget {
 }
 
 class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
-  bool showFilter = false;
-  bool isForFemale = true;
-  bool groupByGoal = true;
+  bool? isForFemale;
+  bool _initialized = false;
+  bool showGenderSelector = false;
+  bool isLoading = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null && args.containsKey('isFemale')) {
+        isForFemale = args['isFemale'] as bool;
+        isLoading = false;
+        print('[WorkoutPlan] Got isFemale from args: $isForFemale');
+      } else {
+        fetchGenderFromProfile();
+      }
+      _initialized = true;
+    }
+  }
+
+  Future<void> fetchGenderFromProfile() async {
+    try {
+      final profileJson = await AuthService.getUserProfile();
+      if (profileJson != null) {
+        final profileMap = jsonDecode(profileJson);
+        if (profileMap is Map && profileMap['data'] != null) {
+          final data = profileMap['data'];
+          bool? apiGender;
+          if (data is Map && data.containsKey('gender')) {
+            final g = data['gender'];
+            if (g is bool) {
+              apiGender = g; // API gender: false = female, true = male
+            } else if (g is int) {
+              apiGender = g == 1; // Convert int: 0 = female, 1 = male
+            }
+          }
+          setState(() {
+            isForFemale = apiGender == false; // API false means female, so isForFemale = true
+            isLoading = false;
+          });
+          return;
+        }
+      }
+    } catch (e) {
+      print('Error fetching gender from profile: $e');
+    }
+    setState(() {
+      isForFemale = false; // Default to male (API true)
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> plans = isForFemale
+    if (isLoading || isForFemale == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    final List<Map<String, String>> plans = isForFemale!
         ? [
             {
               'title': 'WEIGHT LOSS',
@@ -61,7 +117,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          'Choose your workout plan',
+          'Chọn kế hoạch tập luyện của bạn',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -70,94 +126,65 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Dòng trạng thái và nút arrow
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  showFilter = !showFilter;
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    isForFemale ? 'FEMALE' : 'MALE',
-                    style: const TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    showFilter ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+            child: Row(
+              children: [
+                Text(
+                  "DÀNH CHO, ${isForFemale! ? "NỮ" : "NAM"}",
+                  style: const TextStyle(
                     color: Colors.blueGrey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: Icon(
+                    showGenderSelector
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: AppColors.pinkTheme,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      showGenderSelector = !showGenderSelector;
+                    });
+                  },
+                ),
+              ],
             ),
           ),
-          if (showFilter)
+          // Cụm radio button chọn giới tính
+          if (showGenderSelector)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isForFemale = false;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              'FOR MALE',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              isForFemale
-                                  ? Icons.radio_button_off
-                                  : Icons.radio_button_checked,
-                              color: isForFemale ? AppColors.pinkTheme : AppColors.pinkTheme,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 24),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isForFemale = true;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              'FOR FEMALE',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              isForFemale
-                                  ? Icons.radio_button_checked
-                                  : Icons.radio_button_off,
-                              color: isForFemale ? AppColors.pinkTheme : AppColors.pinkTheme,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  _CustomRadio(
+                    label: "NAM",
+                    value: false,
+                    groupValue: isForFemale!,
+                    onChanged: (value) {
+                      setState(() {
+                        isForFemale = value!;
+                      });
+                    },
+                    color: AppColors.pinkTheme,
+                  ),
+                  const SizedBox(width: 24),
+                  _CustomRadio(
+                    label: "NỮ",
+                    value: true,
+                    groupValue: isForFemale!,
+                    onChanged: (value) {
+                      setState(() {
+                        isForFemale = value!;
+                      });
+                    },
+                    color: AppColors.pinkTheme,
                   ),
                 ],
               ),
@@ -174,7 +201,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ChooseLocationScreen(),
+                        builder: (_) => ChooseLocationScreen(
+                          goal: plan['title'],
+                          image: plan['image'],
+                        ),
                       ),
                     );
                   },
@@ -221,7 +251,6 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
             // Handle "Scan QR" button tap
-            // Example: showDialog(context: context, builder: (_) => ...);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {
@@ -232,3 +261,65 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     );
   }
 }
+
+// Custom radio button widget
+class _CustomRadio extends StatelessWidget {
+  final String label;
+  final bool value;
+  final bool groupValue;
+  final ValueChanged<bool?> onChanged;
+  final Color color;
+
+  const _CustomRadio({
+    required this.label,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = value == groupValue;
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: color,
+                width: 2,
+              ),
+            ),
+            child: selected
+                ? Center(
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.blueGrey,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

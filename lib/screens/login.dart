@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../api_service/auth_service.dart';
+import '../api_service/google_sign_in_service.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -131,7 +133,8 @@ class LoginScreen extends StatelessWidget {
                             ),
                             textStyle: const TextStyle(fontSize: 16),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                          }
                         ),
                       ),
 
@@ -140,7 +143,7 @@ class LoginScreen extends StatelessWidget {
                       // Text đăng nhập/đăng ký email
                       GestureDetector(
                         onTap: () {
-                          // Xử lý nhấn vào
+                          Navigator.pushReplacementNamed(context, '/email');
                         },
                         child: const Text(
                           'Sign in/Register with email address',
@@ -160,8 +163,32 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/measurement');
+                      onPressed: () async {
+                        try {
+                          // Create a guest user account
+                          final guestResult = await AuthService.createGuestUser();
+                          final userId = guestResult['user_id']?.toString() ?? 
+                                        guestResult['userId']?.toString() ?? '';
+                          
+                          if (userId.isNotEmpty) {
+                            Navigator.pushReplacementNamed(
+                              context, 
+                              '/gender',
+                              arguments: {'userId': userId, 'isGuest': true},
+                            );
+                          } else {
+                            throw Exception('Failed to create guest user');
+                          }
+                        } catch (e) {
+                          print('Error creating guest user: $e');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Không thể tạo tài khoản tạm thời: ${e.toString()}'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),

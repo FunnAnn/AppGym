@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'bottom.dart';
+import '../../theme/app_colors.dart'; 
+import '../workout/plan_detail_screen.dart';
 
 class WorkoutCalendarPage extends StatefulWidget {
-  const WorkoutCalendarPage({Key? key}) : super(key: key);
+  final List<DateTime>? workoutDays;
+  const WorkoutCalendarPage({Key? key, this.workoutDays}) : super(key: key);
 
   @override
   State<WorkoutCalendarPage> createState() => _WorkoutCalendarPageState();
@@ -12,7 +15,7 @@ class WorkoutCalendarPage extends StatefulWidget {
 class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay = DateTime.now(); 
 
   final Map<DateTime, List<Map<String, String>>> _workoutSchedule = {
     DateTime.utc(2025, 5, 1): [
@@ -41,6 +44,20 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
       {'type': 'Stretching', 'coach': 'With Coach'},
     ],
   };
+
+  @override
+  void initState() {
+    super.initState();
+    // Nếu có workoutDays truyền vào thì thêm vào lịch
+    if (widget.workoutDays != null) {
+      for (final day in widget.workoutDays!) {
+        final key = DateTime.utc(day.year, day.month, day.day);
+        _workoutSchedule[key] = [
+          {'type': 'Tập luyện', 'coach': 'Auto'}
+        ];
+      }
+    }
+  }
 
   List<Map<String, String>> _getWorkoutsForDay(DateTime day) {
     return _workoutSchedule[DateTime.utc(day.year, day.month, day.day)] ?? [];
@@ -75,22 +92,18 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
                 decoration: const InputDecoration(labelText: 'Workout Type'),
               ),
               const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Checkbox(
-                      value: _withCoach,
-                      onChanged: (value) {
-                        setState(() {
-                          _withCoach = value ?? false;
-                        });
-                      },
-                    ),
-                    const Text('With Coach'),
-                  ],
-                ),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _withCoach,
+                    onChanged: (value) {
+                      setState(() {
+                        _withCoach = value ?? false;
+                      });
+                    },
+                  ),
+                  const Text('With Coach'),
+                ],
               ),
             ],
           ),
@@ -107,8 +120,8 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
                 };
                 if (workout['type']!.isNotEmpty && _selectedDay != null) {
                   _addWorkout(_selectedDay!, workout);
+                  Navigator.of(context).pop();
                 }
-                Navigator.of(context).pop();
               },
               child: const Text('Add'),
             ),
@@ -126,15 +139,15 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: _selectedDay == null ? null : _showAddWorkoutDialog,
+            onPressed: _showAddWorkoutDialog, // <-- luôn cho phép bấm
           ),
         ],
       ),
       body: Column(
         children: [
           TableCalendar(
-            firstDay: DateTime.utc(2025, 5, 1),
-            lastDay: DateTime.utc(2025, 5, 31),
+            firstDay: DateTime.utc(2000, 1, 1), 
+            lastDay: DateTime.utc(2100, 12, 31), 
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
@@ -152,15 +165,15 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
             eventLoader: (day) => _getWorkoutsForDay(day),
             calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
-                color: Colors.blue.shade100,
+                color: AppColors.pinkTheme.withOpacity(0.15), 
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
-                color: Colors.blue,
+                color: AppColors.pinkTheme,
                 shape: BoxShape.circle,
               ),
               markerDecoration: BoxDecoration(
-                color: Colors.blue,
+                color: AppColors.pinkTheme,
                 shape: BoxShape.circle,
               ),
             ),

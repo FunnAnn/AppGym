@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'bottom_main/bottom.dart';
+import '../bottom_main/bottom.dart';
+import 'choose_equipment.dart';
 
 class ChooseLocationScreen extends StatelessWidget {
-  const ChooseLocationScreen({super.key});
+  final String? goal;
+  final String? image;
+  const ChooseLocationScreen({super.key, this.goal, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +14,7 @@ class ChooseLocationScreen extends StatelessWidget {
         elevation: 0,
         leading: BackButton(color: Colors.black),
         title: const Text(
-          'Nơi tập luyện',
+          'Workout Location',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -21,15 +24,25 @@ class ChooseLocationScreen extends StatelessWidget {
         child: Column(
           children: [
             _LocationCard(
-              title: 'TẠI GYM',
+              title: 'AT GYM',
               image: 'assets/images/gym.png',
               onTap: () {},
             ),
             const SizedBox(height: 16),
             _LocationCard(
-              title: 'TẠI NHÀ',
+              title: 'AT HOME',
               image: 'assets/images/home.png',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChooseEquipmentScreen(
+                      goal: goal,
+                      image: image,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -38,11 +51,11 @@ class ChooseLocationScreen extends StatelessWidget {
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
-            // Đã ở trang này
+            // Already on this page
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Xử lý nút "Scan QR" nếu cần
+            // Handle "Scan QR" button if needed
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {
