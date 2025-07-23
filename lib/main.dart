@@ -13,6 +13,7 @@ import 'user/bottom_main/package.dart';
 import 'user/gender.dart';
 import 'screens/email.dart';
 import 'admin/dashboard.dart';
+import '../../coach/dashboard_coach.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
         '/package': (context) => PackagesOverviewPage(), // Gói thành viên
         '/gender': (context) => GenderSelectScreen(), // Chọn giới tính
         '/email': (context) => EmailScreen(), // Đăng nhập bằng email
-        '/admin_dashboard': (context) => DashboardPage(), // Dashboard admin
+        '/coach_dashboard': (context) => DashboardCoachPage(), // Dashboard coach
 
       },
     );

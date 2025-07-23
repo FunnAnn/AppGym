@@ -420,11 +420,11 @@ class _EmailScreenState extends State<EmailScreen> {
                           case 'OWNER':
                           case 'ADMIN':
                             // Chuyển sang dashboard cho owner và admin
-                            Navigator.pushReplacementNamed(context, '/admin_dashboard');
+                            Navigator.pushReplacementNamed(context, '/admin');
                             break;
                           case 'COACH':
-                            // Chuyển sang coach panel
-                            Navigator.pushReplacementNamed(context, '/coach');
+                            // Chuyển sang coach dashboard
+                            Navigator.pushReplacementNamed(context, '/coach_dashboard');
                             break;
                           case 'CUSTOMER':
                           case 'USER':

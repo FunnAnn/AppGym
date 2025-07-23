@@ -6,7 +6,7 @@ import '../model/health.dart' as HealthModel;
 
 class HealthService {
   static const String _baseUrl = 'https://splendid-wallaby-ethical.ngrok-free.app';
-
+  
   // Get current user info
   static Future<Map<String, dynamic>?> getCurrentUser() async {
     try {
@@ -31,31 +31,28 @@ class HealthService {
   static Future<Map<String, dynamic>?> getHealthByUserId(int userId) async {
     try {
       final headers = await AuthService.getHeaders();
-      final url = Uri.parse('$_baseUrl/health/get-health-by-user-id/$userId');
-      
-      final response = await http.get(url, headers: headers);
-      
-      print('Get health data response status: ${response.statusCode}');
-      print('Get health data response body: ${response.body}');
-      
+      if (headers == null) {
+        throw Exception('No authentication headers found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$_baseUrl/health/get-health-by-user-id/$userId'),
+        headers: headers,
+      );
+
+      print('Health API Response Status: ${response.statusCode}');
+      print('Health API Response Body: ${response.body}');
+
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        
-        // Return the data as Map for compatibility with existing code
-        if (jsonData is Map && jsonData.containsKey('data')) {
-          final data = jsonData['data'];
-          if (data is Map) {
-            return data as Map<String, dynamic>;
-          }
-        }
-        return jsonData as Map<String, dynamic>?;
+        final dynamic jsonData = json.decode(response.body);
+        return jsonData['data'];
       } else if (response.statusCode == 404) {
-        return null;
+        return null; // No health data found
       } else {
         throw Exception('Failed to load health data: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error getting health data: $e');
+      print('Error getting health data for user $userId: $e');
       throw Exception('Error loading health data: $e');
     }
   }

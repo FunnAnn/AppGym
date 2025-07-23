@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'bottom.dart';
 import '../../api_service/package_service.dart';
 import '../../model/package.dart' as PackageModel;
+import '../../theme/app_colors.dart';
 
 class Package {
   final String name;
@@ -62,12 +63,21 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Membership Packages'),
+        title: Text(
+          'Membership Packages',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: AppColors.pinkTheme,
+        elevation: 0,
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: AppColors.pinkTheme))
           : error != null
               ? Center(
                   child: Column(
@@ -99,20 +109,40 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                     )
                   : RefreshIndicator(
                       onRefresh: fetchPackages,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: GridView.builder(
-                          itemCount: packages.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 3 / 4,
-                          ),
-                          itemBuilder: (context, index) {
-                            final package = packages[index];
-                            return PackageCard(package: package);
-                          },
+                      color: AppColors.pinkTheme,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Choose Your Perfect Plan',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.pinkTheme,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Select the membership that fits your fitness goals',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 24),
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: packages.length,
+                              separatorBuilder: (context, index) => SizedBox(height: 16),
+                              itemBuilder: (context, index) {
+                                final package = packages[index];
+                                return PackageCard(package: package);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -143,85 +173,155 @@ class PackageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (package.isPopular)
-              Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: package.isPopular 
+            ? [AppColors.pinkTheme, Color(0xFFFF6B9D)]
+            : [Colors.white, Colors.grey[50]!],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Popular badge
+          if (package.isPopular)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  '🔥 POPULAR',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+          
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Package name
+                Text(
+                  package.name,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: package.isPopular ? Colors.white : AppColors.pinkTheme,
+                  ),
+                ),
+                SizedBox(height: 8),
+                
+                // Price and duration row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      package.price,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: package.isPopular ? Colors.white : Colors.green[700],
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: package.isPopular 
+                          ? Colors.white.withOpacity(0.2)
+                          : AppColors.pinkTheme.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        package.duration,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: package.isPopular ? Colors.white : AppColors.pinkTheme,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                
+                SizedBox(height: 20),
+                
+                // Features section
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.orangeAccent,
+                    color: package.isPopular 
+                      ? Colors.white.withOpacity(0.1)
+                      : Colors.grey[100],
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    'Popular',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            SizedBox(height: 8),
-            Text(
-              package.name,
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent),
-            ),
-            SizedBox(height: 8),
-            Text(
-              package.price,
-              style: TextStyle(fontSize: 18, color: Colors.green[700]),
-            ),
-            SizedBox(height: 4),
-            Text(
-              'Duration: ${package.duration}',
-              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-            ),
-            Divider(height: 24, thickness: 1),
-            Text(
-              'Features:',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600, color: Colors.black87),
-            ),
-            ...package.features.map((feature) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.check_circle, size: 16, color: Colors.blue),
-                      SizedBox(width: 6),
-                      Expanded(child: Text(feature)),
+                      Text(
+                        'Package Includes:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: package.isPopular ? Colors.white : AppColors.pinkTheme,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      SizedBox(height: 8),
+                      ...package.features.take(5).map((feature) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle_rounded,
+                              size: 20,
+                              color: package.isPopular ? Colors.white : AppColors.pinkTheme,
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                feature,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: package.isPopular ? Colors.white.withOpacity(0.9) : Colors.grey[700],
+                                  height: 1.3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                     ],
                   ),
-                )),
-            Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle package selection
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('You have selected the ${package.name} package')));
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: StadiumBorder(),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 36, vertical: 12),
                 ),
-                child: Text('See Details'),
-              ),
-            )
-          ],
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

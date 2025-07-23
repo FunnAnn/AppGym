@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dashboard_coach.dart';
 import '../api_service/auth_service.dart';
 import '../theme/app_colors.dart';
+import 'user_coach.dart';
+import 'view_package.dart';
 
 class LayoutCoach extends StatelessWidget {
   final Widget body;
@@ -47,7 +50,6 @@ class LayoutCoach extends StatelessWidget {
       );
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class LayoutCoach extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: Center(
                   child: SizedBox(
-                    height: 120, // Sửa chiều cao hợp lý
+                    height: 120,
                     child: Image.asset(
                       'assets/images/logo.jpg',
                       width: 300,
@@ -77,13 +79,13 @@ class LayoutCoach extends StatelessWidget {
                   ),
                 ),
               ),
-              // Dash Board group
+              // Coach Panel group
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                 child: Text(
-                  'Dash Board',
+                  'Coach Panel',
                   style: const TextStyle(
-                    color: Color(0xFFE91E63), // Use direct color instead of AppColors.pinkTheme
+                    color: Color(0xFFE91E63),
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -91,33 +93,38 @@ class LayoutCoach extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.dashboard_customize_outlined, color: AppColors.pinkTheme),
-                title: const Text('Dash Board'),
+                title: const Text('Dashboard'),
                 onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => DashboardCoachPage()),
+                  );
                 },
               ),
               ListTile(
                 leading: Icon(Icons.person_outline, color: AppColors.pinkTheme),
-                title: Text('Member'),
+                title: Text('User'),
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CoachCustomerPage()));
                 },
               ),
               ListTile(
                 leading: Icon(Icons.inventory_2_outlined, color: AppColors.pinkTheme),
                 title: Text('Package'),
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewPackagePage()));
                 },
-              ),
-              
-              ListTile(
-                leading: Icon(Icons.chat_bubble_outline, color: AppColors.pinkTheme),
-                title: Text('Chat'),
-                onTap: () {},
               ),
               ListTile(
                 leading: Icon(Icons.video_library_outlined, color: AppColors.pinkTheme),
                 title: Text('Video'),
                 onTap: () {},
               ),
+              ListTile(
+                leading: Icon(Icons.chat_bubble_outline, color: AppColors.pinkTheme),
+                title: Text('Chat'),
+                onTap: () {},
+              ),
+              
               // Divider và logout
               Divider(
                 color: Colors.grey[300],

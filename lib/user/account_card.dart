@@ -111,21 +111,27 @@ class _AccountCardState extends State<AccountCard> {
           if (packageId != null) {
             await _loadPackageInfo(packageId.toString());
           } else {
-            _hasPackage = false;
-            _packageName = 'No package available';
+            setState(() {
+              _hasPackage = false;
+              _packageName = 'No package available';
+            });
           }
         }
       } else {
         // No membership found
-        _hasPackage = false;
-        _packageName = 'No package available';
-        _exp = 'N/A';
+        setState(() {
+          _hasPackage = false;
+          _packageName = 'No package available';
+          _exp = 'N/A';
+        });
       }
     } catch (e) {
       print('Error loading membership info: $e');
-      _hasPackage = false;
-      _packageName = 'No package available';
-      _exp = 'N/A';
+      setState(() {
+        _hasPackage = false;
+        _packageName = 'No package available';
+        _exp = 'N/A';
+      });
     }
   }
 
@@ -148,20 +154,26 @@ class _AccountCardState extends State<AccountCard> {
         if (packageData is Map && packageData.containsKey('data')) {
           final data = packageData['data'];
           
-          // Get package name
-          _packageName = data['package_name']?.toString() ?? 'No package available';
-          _hasPackage = _packageName != 'No package available' && _packageName.isNotEmpty;
+          setState(() {
+            // Get package name
+            _packageName = data['package_name']?.toString() ?? 'No package available';
+            _hasPackage = _packageName != 'No package available' && _packageName.isNotEmpty;
+          });
           
           print('Package loaded: $_packageName, hasPackage: $_hasPackage');
         }
       } else {
-        _hasPackage = false;
-        _packageName = 'No package available';
+        setState(() {
+          _hasPackage = false;
+          _packageName = 'No package available';
+        });
       }
     } catch (e) {
       print('Error loading package info: $e');
-      _hasPackage = false;
-      _packageName = 'No package available';
+      setState(() {
+        _hasPackage = false;
+        _packageName = 'No package available';
+      });
     }
   }
 
