@@ -4,6 +4,7 @@ import '../api_service/auth_service.dart';
 import '../theme/app_colors.dart';
 import 'user_coach.dart';
 import 'view_package.dart';
+import 'excercise_coach.dart';
 
 class LayoutCoach extends StatelessWidget {
   final Widget body;
@@ -116,8 +117,10 @@ class LayoutCoach extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.video_library_outlined, color: AppColors.pinkTheme),
-                title: Text('Video'),
-                onTap: () {},
+                title: Text('Excercise'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CoachExercisePage()));
+                },
               ),
               ListTile(
                 leading: Icon(Icons.chat_bubble_outline, color: AppColors.pinkTheme),

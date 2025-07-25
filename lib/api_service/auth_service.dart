@@ -9,6 +9,33 @@ class AuthService {
   static const String _userRoleKey = 'user_role';
   static const String _userIdKey = 'user_id';
   
+  // This should store the current user's information
+  static Map<String, dynamic>? _currentUser;
+  static String? _token;
+  
+  // Getters
+  static Map<String, dynamic>? get currentUser => _currentUser;
+  static String? get token => _token;
+  static int? get currentUserId => _currentUser?['id'];
+  static String? get currentUserRole => _currentUser?['role'];
+  
+  // Role checks
+  static bool get isAdmin => currentUserRole == 'ADMIN';
+  static bool get isOwner => currentUserRole == 'OWNER';
+  static bool get isCoach => currentUserRole == 'COACH';
+  static bool get isUser => currentUserRole == 'USER' || currentUserRole == 'CUSTOMER';
+  
+  // Permission checks
+  static bool get canManageAllSchedules => isAdmin || isOwner;
+  static bool get canViewOthersSchedules => isCoach || isUser;
+  
+  // Set user data after login
+  static void setCurrentUser(Map<String, dynamic> user, {String? authToken}) {
+    _currentUser = user;
+    _token = authToken;
+    print('AuthService: User set - Role: ${currentUserRole}, ID: ${currentUserId}');
+  }
+  
   // Save token to SharedPreferences
   static Future<void> _saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,6 +49,11 @@ class AuthService {
     final token = prefs.getString(_tokenKey);
     print('Token retrieved from SharedPreferences: ${token != null ? '${token.substring(0, 20)}...' : 'null'}');
     return token;
+  }
+  
+  // Public method to get token (this was missing)
+  static Future<String?> getToken() async {
+    return await _getToken();
   }
   
   // Create headers with token (private method)
@@ -73,24 +105,6 @@ class AuthService {
     return prefs.getString(_userIdKey);
   }
   
-  // Check if user is admin
-  static Future<bool> isAdmin() async {
-    final role = await getUserRole();
-    return role == 'ADMIN';
-  }
-
-  // Check if user is owner
-  static Future<bool> isOwner() async {
-    final role = await getUserRole();
-    return role == 'OWNER';
-  }
-
-  // Check if user is coach
-  static Future<bool> isCoach() async {
-    final role = await getUserRole();
-    return role == 'COACH';
-  }
-
   // Check if user is customer
   static Future<bool> isCustomer() async {
     final role = await getUserRole();
@@ -502,21 +516,10 @@ class AuthService {
 
   // Logout
   static Future<void> logout() async {
-    try {
-      final url = Uri.parse('$_baseUrl/auth/logout');
-      final headers = await _getHeaders();
-      
-      final response = await http.post(url, headers: headers);
-      print('Logout response status: ${response.statusCode}');
-      
-      // Clear token locally regardless of API response
-      await clearToken();
-      
-    } catch (e) {
-      print('Error in logout: $e');
-      // Still clear local token if an error occurs
-      await clearToken();
-    }
+    await clearToken();
+    _currentUser = null;
+    _token = null;
+    print('Logged out: local token and user info cleared.');
   }
 
   // Create guest user

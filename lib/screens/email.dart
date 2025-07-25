@@ -26,6 +26,15 @@ class _EmailScreenState extends State<EmailScreen> {
   DateTime? dateOfBirth;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && args.containsKey('isRegister')) {
+      isRegister = args['isRegister'] as bool;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // Nền trắng

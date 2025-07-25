@@ -209,12 +209,12 @@ class _BodyMeasurementDetailScreenState extends State<BodyMeasurementDetailScree
     return Scaffold(
       backgroundColor: Colors.white, // White background
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pinkTheme,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           'Details',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

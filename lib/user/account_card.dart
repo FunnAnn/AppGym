@@ -177,6 +177,14 @@ class _AccountCardState extends State<AccountCard> {
     }
   }
 
+  final user = AuthService.currentUser;
+
+  String displayNA(dynamic value) {
+    if (value == null) return 'N/A';
+    if (value is String && value.trim().isEmpty) return 'N/A';
+    return value.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {

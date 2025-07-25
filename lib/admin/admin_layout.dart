@@ -6,6 +6,9 @@ import '../theme/app_colors.dart';
 import 'package_management.dart';
 import 'membership_management.dart';
 import 'equipment_management.dart';
+import 'excercise_management.dart';
+import 'training_plan_management.dart';
+import 'chat_assistant.dart';
 
 class AdminLayout extends StatelessWidget {
   final Widget body;
@@ -96,13 +99,23 @@ class AdminLayout extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.dashboard_customize_outlined, color: AppColors.pinkTheme),
-                title: const Text('Dash Board'),
+                title: const Text('Training Plans'),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => TrainingPlanManagementPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.dashboard_customize_outlined, color: AppColors.pinkTheme),
+                title: const Text('Plan Exercises'),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => DashboardPage()),
                   );
                 },
               ),
+              
               ListTile(
                 leading: Icon(Icons.person_outline, color: AppColors.pinkTheme),
                 title: Text('User'),
@@ -133,7 +146,11 @@ class AdminLayout extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.chat_bubble_outline, color: AppColors.pinkTheme),
                 title: Text('Chat'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => GemBot()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.qr_code_scanner_outlined, color: AppColors.pinkTheme),
@@ -150,9 +167,13 @@ class AdminLayout extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.video_library_outlined, color: AppColors.pinkTheme),
-                title: Text('Video'),
-                onTap: () {},
+                leading: Icon(Icons.sports_gymnastics_outlined, color: AppColors.pinkTheme),
+                title: Text('Exercises'),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ExerciseManagementPage()),
+                  );
+                },
               ),
               // Divider và logout
               Divider(
@@ -164,7 +185,7 @@ class AdminLayout extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.red),
                 title: Text(
-                  'Đăng xuất',
+                  'Logout',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () => _logout(context),
@@ -181,7 +202,7 @@ class AdminLayout extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => _logout(context),
-            tooltip: 'Đăng xuất',
+            tooltip: 'Logout',
           ),
         ],
       ),

@@ -1,8 +1,30 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'bottom.dart';
 import '../../theme/app_colors.dart'; 
 import '../workout/plan_detail_screen.dart';
+import '../../api_service/schedule_service.dart';
+
+Future<List<Map<String, dynamic>>> fetchSchedules() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+  final url = Uri.parse('YOUR_BASE_URL/schedules/get-schedules');
+  final response = await http.get(
+    url,
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+  );
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    return List<Map<String, dynamic>>.from(jsonData['data']);
+  }
+  return [];
+}
 
 class WorkoutCalendarPage extends StatefulWidget {
   final List<DateTime>? workoutDays;
@@ -48,14 +70,33 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   @override
   void initState() {
     super.initState();
-    // Nếu có workoutDays truyền vào thì thêm vào lịch
-    if (widget.workoutDays != null) {
-      for (final day in widget.workoutDays!) {
-        final key = DateTime.utc(day.year, day.month, day.day);
-        _workoutSchedule[key] = [
-          {'type': 'Tập luyện', 'coach': 'Auto'}
-        ];
-      }
+    _fetchSchedules();
+  }
+
+  Future<void> _fetchSchedules() async {
+    final service = ScheduleService();
+    final schedule = await service.fetchSchedules();
+    if (schedule != null && schedule.data != null) {
+      setState(() {
+        _workoutSchedule.clear();
+        for (final item in schedule.data!) {
+          if (item.startDate != null) {
+            final date = DateTime.tryParse(item.startDate!);
+            if (date != null) {
+              final key = DateTime.utc(date.year, date.month, date.day);
+              final workout = {
+                'type': item.title ?? '',
+                'coach': item.description ?? '',
+              };
+              if (_workoutSchedule.containsKey(key)) {
+                _workoutSchedule[key]!.add(workout);
+              } else {
+                _workoutSchedule[key] = [workout];
+              }
+            }
+          }
+        }
+      });
     }
   }
 
@@ -77,6 +118,8 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   void _showAddWorkoutDialog() {
     final _typeController = TextEditingController();
     bool _withCoach = false;
+    TimeOfDay? _selectedTime;
+    final _timeController = TextEditingController();
 
     showDialog(
       context: context,
@@ -89,7 +132,31 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
             children: [
               TextField(
                 controller: _typeController,
-                decoration: const InputDecoration(labelText: 'Workout Type'),
+                decoration: const InputDecoration(labelText: 'Workout Title'),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: _selectedTime ?? TimeOfDay.now(),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      _selectedTime = picked;
+                      _timeController.text = picked.format(context);
+                    });
+                  }
+                },
+                child: AbsorbPointer(
+                  child: TextField(
+                    controller: _timeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Time',
+                      suffixIcon: Icon(Icons.access_time),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -113,14 +180,37 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
-                final workout = {
-                  'type': _typeController.text.trim(),
-                  if (_withCoach) 'coach': 'With Coach',
-                };
-                if (workout['type']!.isNotEmpty && _selectedDay != null) {
-                  _addWorkout(_selectedDay!, workout);
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                final userMe = json.decode(prefs.getString('user_me') ?? '{}');
+                final customerId = userMe['data']['user_id'];
+                final coachId = userMe['data']['coach_customers'][0]['coach_id'];
+
+                final selectedDay = _selectedDay ?? DateTime.now();
+                final startDate = DateTime(
+                  selectedDay.year,
+                  selectedDay.month,
+                  selectedDay.day,
+                  _selectedTime?.hour ?? 8,
+                  _selectedTime?.minute ?? 0,
+                );
+                final endDate = startDate.add(const Duration(hours: 1));
+
+                final success = await ScheduleService().createSchedule(
+                  customerId: customerId,
+                  coachId: coachId,
+                  title: _typeController.text.trim(),
+                  startDate: startDate.toIso8601String(),
+                  endDate: endDate.toIso8601String(),
+                  description: _withCoach ? 'With Coach' : '',
+                );
+                if (success) {
+                  await _fetchSchedules();
                   Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to create schedule')),
+                  );
                 }
               },
               child: const Text('Add'),
