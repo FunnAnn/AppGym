@@ -1,10 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter_app/user/onboarding.dart';
 import 'admin/admin_layout.dart';
 import 'screens/login.dart';
 import 'user/measurement.dart';
+import 'user/bottom_main/workout_plan.dart';
+import 'admin/dashboard.dart';
+import 'user/bottom_main/calendar.dart';
+import 'user/bottom_main/account_page.dart';
+import 'user/bottom_main/package.dart';
+import 'user/gender.dart';
+import 'screens/email.dart';
+import 'admin/dashboard.dart';
+import '../../coach/dashboard_coach.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase
+  try {
+    // Thêm log để debug
+    print('🔥 Bắt đầu khởi tạo Firebase...');
+    
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    
+    print('✅ Firebase khởi tạo thành công!');
+    
+    // Kiểm tra Firebase app
+    final app = Firebase.app();
+    print('📱 Firebase App: ${app.name}');
+    print('🔗 Firebase Options: ${app.options.projectId}');
+  } catch (e) {
+    print('Firebase initialization: $e');
+  }
+  
   runApp(const MyApp());
 }
 
@@ -15,54 +47,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Body Shape',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFf70d6f)),
       ),
-      home: const RoleSelectorScreen(),
+      home: const OnboardingPager(),
       routes: {
         '/login': (context) => LoginScreen(), // Đăng nhập
         '/onboarding': (context) => OnboardingPager(), // Onboarding
-        '/admin': (context) => AdminLayout(), // Giao diện admin
-        '/measurement': (context) => MeasurementScreen(), // Thông số cơ thể
+        '/admin': (context) => DashboardPage(), // Giao diện admin
+        '/measurement': (context) => MeasurementScreen(),
+        '/workout': (context) => WorkoutPlanScreen(), // Thông số cơ thể
+        '/calendar': (context) => WorkoutCalendarPage(), // Lịch tập
+        '/account': (context) => AccountPage(), // Tài khoản
+        '/package': (context) => PackagesOverviewPage(), // Gói thành viên
+        '/gender': (context) => GenderSelectScreen(), // Chọn giới tính
+        '/email': (context) => EmailScreen(), // Đăng nhập bằng email
+        '/coach_dashboard': (context) => DashboardCoachPage(), // Dashboard coach
+
       },
-    );
-  }
-}
-
-class RoleSelectorScreen extends StatelessWidget {
-  const RoleSelectorScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Chọn vai trò')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: const Text('Admin'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AdminLayout()),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              child: const Text('User'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const OnboardingPager()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
