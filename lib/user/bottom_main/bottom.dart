@@ -1,4 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import '../../api_service/auth_service.dart';
+import 'dart:convert';
+
+// Hàm public để show QR popup
+Future<void> showQRDialog(BuildContext context) async {
+  final userId = await AuthService.getUserId();
+  final role = await AuthService.getUserRole();
+  final accessToken = await AuthService.getToken();
+  final key = await AuthService.getUserKey();
+
+  final qrData = jsonEncode({
+    "user_id": userId,
+    "role": role,
+    "key": key,
+    "accessToken": accessToken,
+  });
+
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      contentPadding: const EdgeInsets.all(24),
+      content: SizedBox(
+        width: 300, 
+        height: 300,
+        child: Center(
+          child: QrImageView(
+            data: qrData,
+            size: 260, 
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -13,7 +48,7 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80, // Increase height to make room for the floating button
+      height: 80,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -32,11 +67,11 @@ class AppBottomNavigationBar extends StatelessWidget {
                   label: 'Schedule',
                 ),
                 BottomNavigationBarItem(
-                  icon: SizedBox(height: 0), // Keep for label alignment
-                  label: '', // Hide label for the middle icon
+                  icon: Icon(Icons.qr_code, color: Colors.transparent, size: 24), 
+                  label: '',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.card_giftcard), // Changed from Icons.package to Icons.card_giftcard
+                  icon: Icon(Icons.card_giftcard),
                   label: 'Packages',
                 ),
                 BottomNavigationBarItem(
@@ -48,15 +83,13 @@ class AppBottomNavigationBar extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
               onTap: (index) {
                 if (index == 2) {
-                  // Handle "Scan QR" button tap
-                  // Example: showDialog(context: context, builder: (_) => ...);
+                  showQRDialog(context); // Hiện popup QR
                 } else {
                   onTap(index);
                 }
               },
             ),
           ),
-          // Floating QR button
           Positioned(
             top: -20,
             left: 0,
@@ -67,7 +100,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      onTap(2); // When tapping the QR button
+                      showQRDialog(context); // Hiện popup QR khi bấm nút
                     },
                     child: Container(
                       width: 64,
@@ -88,11 +121,11 @@ class AppBottomNavigationBar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8), // Align for consistency
+                const SizedBox(height: 8),
                 Text(
                   'Scan QR',
                   style: TextStyle(
-                    color: Colors.white, // Match other labels
+                    color: Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
                   ),

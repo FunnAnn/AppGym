@@ -65,8 +65,9 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white), 
         title: Text(
-          'Membership Packages',
+          'MEMBERSHIP PACKAGES',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -154,7 +155,7 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
+            showQRDialog(context);
           } else if (index == 3) {
             // Do nothing
           } else if (index == 4) {

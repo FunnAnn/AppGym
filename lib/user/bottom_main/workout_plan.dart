@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'bottom.dart';
-import '../workout/choose_location.dart';
 import '../../theme/app_colors.dart';
 import '../../api_service/auth_service.dart';
+import '../../api_service/training_plan_service.dart';
+import '../../model/training_plan.dart';
+import '../workout/choose_location_screen.dart';
 
 class WorkoutPlanScreen extends StatefulWidget {
   const WorkoutPlanScreen({super.key});
@@ -18,6 +20,9 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   bool showGenderSelector = false;
   bool isLoading = true;
 
+  List<Data> allPlans = [];
+  bool isApiLoading = true;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -31,6 +36,15 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         fetchGenderFromProfile();
       }
       _initialized = true;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Only fetch after gender is known
+    if (isForFemale != null) {
+      fetchPlans();
     }
   }
 
@@ -66,6 +80,18 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     });
   }
 
+  Future<void> fetchPlans() async {
+    setState(() => isApiLoading = true);
+    try {
+      final result = await PlanService.fetchAllPlans();
+      allPlans = result.data ?? [];
+    } catch (e) {
+      // Handle error
+      allPlans = [];
+    }
+    setState(() => isApiLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading || isForFemale == null) {
@@ -76,7 +102,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     final List<Map<String, String>> plans = isForFemale!
         ? [
             {
-              'title': 'WEIGHT LOSS',
+              'title': 'WEIGHT LOST',
               'image': 'assets/images/plan_weight_loss.jpg',
             },
             {
@@ -114,14 +140,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pinkTheme,
         elevation: 0,
         title: const Text(
-          'Chọn kế hoạch tập luyện của bạn',
-          style: TextStyle(color: Colors.black),
+          'WORKOUT PLANS',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +276,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {

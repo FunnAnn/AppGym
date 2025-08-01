@@ -67,10 +67,9 @@ dependencies:
   flutter_flip_card: ^0.0.6
 
   http: ^1.1.0
-  google_sign_in: ^6.2.1
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
   intl: ^0.20.2
+  qr_flutter: ^4.1.0
+  app_links: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -136,6 +135,7 @@ flutter:
     - assets/images/female_bg.jpg
     - assets/images/age.png
     - assets/images/icon_app.jpg
+    - assets/images/transparent_logo.png
 
     - assets/animation/jumprope.json
     

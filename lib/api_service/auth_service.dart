@@ -937,4 +937,74 @@ class AuthService {
       return null;
     }
   }
+
+  // Change password
+  static Future<bool> changePassword({
+    required String userId,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    final url = Uri.parse('$_baseUrl/user/change-password/$userId');
+    final headers = await getHeaders();
+    final response = await http.patch(
+      url,
+      headers: headers,
+      body: jsonEncode({
+        'oldPassword': oldPassword, 
+        'newPassword': newPassword, 
+      }),
+    );
+    if (response.statusCode == 200) return true;
+    final errorMsg = jsonDecode(response.body)['message'] ?? 'Failed to change password';
+    throw Exception(errorMsg);
+  }
+
+  // Get user key
+  static Future<String?> getUserKey() async {
+  try {
+    final profileJson = await getUserProfile();
+    if (profileJson != null) {
+      final profile = jsonDecode(profileJson);
+      if (profile is Map && profile['data'] != null) {
+        return profile['data']['key']?.toString();
+      }
+    }
+    return null;
+  } catch (e) {
+    print('Error getting user key: $e');
+    return null;
+  }
+}
+
+  // Forgot password
+  static Future<String?> forgotPassword(String email) async {
+    final url = 'https://splendid-wallaby-ethical.ngrok-free.app/user/forgot-password';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email}),
+    );
+    if (response.statusCode == 200) {
+      return 'Reset password link sent to email!';
+    } else {
+      final data = jsonDecode(response.body);
+      return data['message'] ?? 'Error';
+    }
+  }
+
+  // Reset password
+  static Future<String?> resetPassword(String token, String newPassword) async {
+    final url = 'https://splendid-wallaby-ethical.ngrok-free.app/user/reset-password';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'token': token, 'newPassword': newPassword}),
+    );
+    if (response.statusCode == 200) {
+      return 'Password reset successful!';
+    } else {
+      final data = jsonDecode(response.body);
+      return data['message'] ?? 'Error';
+    }
+  }
 }

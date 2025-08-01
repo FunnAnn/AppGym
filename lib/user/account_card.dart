@@ -13,8 +13,8 @@ class AccountCard extends StatefulWidget {
 
 class _AccountCardState extends State<AccountCard> {
   bool _isLoading = true;
-  String _name = 'N/A';
-  String _phone = 'N/A';
+  String _name = 'Full name: N/A';
+  String _phone = 'Phone: N/A';
   String _exp = 'N/A';
   String _pt = '';
   bool _hasPackage = false;
@@ -25,43 +25,59 @@ class _AccountCardState extends State<AccountCard> {
   void initState() {
     super.initState();
     _loadUserInfo();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _isLoading = false;
+          _name = 'N/A';
+          _phone = 'N/A';
+          _exp = 'N/A';
+        });
+      }
+    });
+  }
+
+  String displayNA(dynamic value) {
+    if (value == null) return 'N/A';
+    if (value is String && value.trim().isEmpty) return 'N/A';
+    return value.toString();
   }
 
   Future<void> _loadUserInfo() async {
     try {
-      // Get user profile from /user/me
-      final profileJson = await AuthService.getUserProfile();
-      
-      if (profileJson != null) {
-        final profileData = jsonDecode(profileJson);
-        
+      final headers = await AuthService.getHeaders();
+      const String baseUrl = 'https://splendid-wallaby-ethical.ngrok-free.app';
+      final url = Uri.parse('$baseUrl/user/me');
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 401) {
         setState(() {
-          // Extract user data
+          _isLoading = false;
+          _name = 'Full name: N/A';
+          _phone = 'Phone: N/A';
+          _exp = 'N/A';
+        });
+        return;
+      }
+
+      final profileJson = response.body;
+      print('Profile JSON: $profileJson');
+      if (profileJson.isNotEmpty) {
+        final profileData = jsonDecode(profileJson);
+        setState(() {
           if (profileData is Map && profileData.containsKey('data')) {
             final userData = profileData['data'];
-            
-            // Get full name
-            _name = userData['full_name']?.toString() ?? 'N/A';
-            
-            // Get phone number
-            _phone = userData['phone_number']?.toString() ?? 'N/A';
-            
-            // Get user ID using the centralized function
+            _name = displayNA(userData['full_name']);
+            _phone = displayNA(userData['phone_number']);
             _userId = userData['user_id']?.toString() ?? userData['id']?.toString();
-            
-            print('User data loaded: name=$_name, phone=$_phone, userId=$_userId');
-            
-            // Step 2: Get membership data if userId is available
             if (_userId != null) {
               _loadMembershipInfo(_userId!);
             }
           }
-          
           _isLoading = false;
         });
       }
     } catch (e) {
-      print('Error loading user info: $e');
       setState(() {
         _isLoading = false;
         _name = 'N/A';
@@ -79,21 +95,11 @@ class _AccountCardState extends State<AccountCard> {
       final headers = await AuthService.getHeaders();
       const String baseUrl = 'https://splendid-wallaby-ethical.ngrok-free.app';
       final url = Uri.parse('$baseUrl/memberships/get-membership-card-by-user-id/$userId');
-      
-      print('Getting membership info from: $url');
-      
       final response = await http.get(url, headers: headers);
-      
-      print('Membership response status: ${response.statusCode}');
-      print('Membership response body: ${response.body}');
-      
       if (response.statusCode == 200) {
         final membershipData = jsonDecode(response.body);
-        
         if (membershipData is Map && membershipData.containsKey('data')) {
           final data = membershipData['data'];
-          
-          // Get expiration date
           final endDate = data['end_date'];
           if (endDate != null && endDate.toString().isNotEmpty) {
             try {
@@ -105,8 +111,6 @@ class _AccountCardState extends State<AccountCard> {
           } else {
             _exp = 'N/A';
           }
-          
-          // Get package ID and fetch package details
           final packageId = data['package_id'];
           if (packageId != null) {
             await _loadPackageInfo(packageId.toString());
@@ -118,7 +122,6 @@ class _AccountCardState extends State<AccountCard> {
           }
         }
       } else {
-        // No membership found
         setState(() {
           _hasPackage = false;
           _packageName = 'No package available';
@@ -126,7 +129,6 @@ class _AccountCardState extends State<AccountCard> {
         });
       }
     } catch (e) {
-      print('Error loading membership info: $e');
       setState(() {
         _hasPackage = false;
         _packageName = 'No package available';
@@ -178,12 +180,6 @@ class _AccountCardState extends State<AccountCard> {
   }
 
   final user = AuthService.currentUser;
-
-  String displayNA(dynamic value) {
-    if (value == null) return 'N/A';
-    if (value is String && value.trim().isEmpty) return 'N/A';
-    return value.toString();
-  }
 
   @override
   Widget build(BuildContext context) {

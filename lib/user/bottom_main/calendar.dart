@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'bottom.dart';
 import '../../theme/app_colors.dart'; 
-import '../workout/plan_detail_screen.dart';
 import '../../api_service/schedule_service.dart';
 
 Future<List<Map<String, dynamic>>> fetchSchedules() async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
-  final url = Uri.parse('YOUR_BASE_URL/schedules/get-schedules');
+  final url = Uri.parse('https://splendid-wallaby-ethical.ngrok-free.app/schedules/get-schedules');
   final response = await http.get(
     url,
     headers: {
@@ -37,35 +36,9 @@ class WorkoutCalendarPage extends StatefulWidget {
 class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay = DateTime.now(); 
+  DateTime? _selectedDay = DateTime.now();
 
-  final Map<DateTime, List<Map<String, String>>> _workoutSchedule = {
-    DateTime.utc(2025, 5, 1): [
-      {'type': 'Upper Body', 'coach': 'With Coach'},
-    ],
-    DateTime.utc(2025, 5, 3): [
-      {'type': 'Cardio'},
-    ],
-    DateTime.utc(2025, 5, 5): [
-      {'type': 'Lower Body', 'coach': 'With Coach'},
-    ],
-    DateTime.utc(2025, 5, 7): [
-      {'type': 'Yoga'},
-    ],
-    DateTime.utc(2025, 5, 10): [
-      {'type': 'Full Body', 'coach': 'With Coach'},
-    ],
-    DateTime.utc(2025, 5, 15): [
-      {'type': 'Cardio'},
-      {'type': 'Upper Body', 'coach': 'With Coach'},
-    ],
-    DateTime.utc(2025, 5, 20): [
-      {'type': 'Lower Body'},
-    ],
-    DateTime.utc(2025, 5, 25): [
-      {'type': 'Stretching', 'coach': 'With Coach'},
-    ],
-  };
+  final Map<DateTime, List<Map<String, String>>> _workoutSchedule = {};
 
   @override
   void initState() {
@@ -74,8 +47,7 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   }
 
   Future<void> _fetchSchedules() async {
-    final service = ScheduleService();
-    final schedule = await service.fetchSchedules();
+    final schedule = await ScheduleService().fetchSchedules();
     if (schedule != null && schedule.data != null) {
       setState(() {
         _workoutSchedule.clear();
@@ -225,11 +197,21 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Calendar'),
+        backgroundColor: AppColors.pinkTheme,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'SCHEDULE WORKOUTS',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _showAddWorkoutDialog, // <-- luôn cho phép bấm
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _showAddWorkoutDialog,
           ),
         ],
       ),
@@ -295,13 +277,12 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
         ],
       ),
       bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: 1, // "Workout Calendar" tab
+        currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
             Navigator.pushReplacementNamed(context, '/workout');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
-            // Example: showDialog(context: context, builder: (_) => ...);
+            showQRDialog(context); 
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {

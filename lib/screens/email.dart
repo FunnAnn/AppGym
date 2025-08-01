@@ -13,6 +13,7 @@ class EmailScreen extends StatefulWidget {
 
 class _EmailScreenState extends State<EmailScreen> {
   bool isRegister = true;
+  bool didInitIsRegister = false; // Thêm biến này
   bool showPassword = false;
   bool isLoading = false;
   String? errorMessage;
@@ -28,9 +29,12 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args != null && args.containsKey('isRegister')) {
-      isRegister = args['isRegister'] as bool;
+    if (!didInitIsRegister) { // Chỉ gán một lần duy nhất
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null && args.containsKey('isRegister')) {
+        isRegister = args['isRegister'] as bool;
+      }
+      didInitIsRegister = true;
     }
   }
 
@@ -162,7 +166,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           child: Text(
                             dateOfBirth == null
                                 ? ''
-                                : '${dateOfBirth!.day}/${dateOfBirth!.month}/${dateOfBirth!.year}',
+                                : '${dateOfBirth!.day.toString().padLeft(2, '0')}/${dateOfBirth!.month.toString().padLeft(2, '0')}/${dateOfBirth!.year}',
                             style: const TextStyle(color: Colors.black),
                           ),
                         ),
@@ -295,7 +299,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  onPressed: isLoading || !isFormValid() ? null : () async {
+                  onPressed: isLoading ? null : () async {
                     setState(() {
                       isLoading = true;
                       errorMessage = null;

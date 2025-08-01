@@ -4,9 +4,9 @@ import 'bottom.dart';
 import '../account/body_measurement_detail.dart';
 import '../account/calorie_calculator.dart';
 import '../account/chat_assist.dart';
-import 'package:flutter_app/screens/login.dart';
 import '../../api_service/auth_service.dart';
 import '../account/bmi.dart';
+import '../account/change_password_screen.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -128,6 +128,14 @@ class _AccountPageState extends State<AccountPage> {
                   },
                 ),
                 ListTile(
+                  title: const Text('Change Password'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // TODO: Navigate to Change Password page
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => ChangePasswordScreen()));
+                  },
+                ),
+                ListTile(
                   title: const Text('Logout'),
                   trailing: const Icon(Icons.logout),
                   onTap: _logout, // Sử dụng method logout mới
@@ -145,8 +153,7 @@ class _AccountPageState extends State<AccountPage> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
-            // Example: showDialog(context: context, builder: (_) => ...);
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           }

@@ -214,9 +214,11 @@ class _GemBotState extends State<GemBot> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
+          } else if (index == 4) {
+            Navigator.pushReplacementNamed(context, '/account');
           }
         },
       ),
