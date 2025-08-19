@@ -41,7 +41,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Nền trắng
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -51,7 +51,7 @@ class _EmailScreenState extends State<EmailScreen> {
         ),
         centerTitle: true,
         title: const Text(
-          'Đăng nhập/Đăng ký',
+          'Sign In / Register',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -62,7 +62,7 @@ class _EmailScreenState extends State<EmailScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Tab Đăng ký / Đăng nhập
+            // Tab Register / Login
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -81,7 +81,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         ),
                       ),
                       onPressed: () => setState(() => isRegister = true),
-                      child: const Text('Đăng ký'),
+                      child: const Text('Register'),
                     ),
                   ),
                   Expanded(
@@ -98,7 +98,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         ),
                       ),
                       onPressed: () => setState(() => isRegister = false),
-                      child: const Text('Đăng nhập'),
+                      child: const Text('Sign In'),
                     ),
                   ),
                 ],
@@ -116,19 +116,19 @@ class _EmailScreenState extends State<EmailScreen> {
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
-                        hintText: 'Nhập địa chỉ email của bạn',
+                        hintText: 'Enter your email address',
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: AppColors.pinkTheme, width: 2),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text('Mật khẩu', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                    const Text('Password', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
                     TextField(
                       controller: passwordController,
                       obscureText: !showPassword,
                       decoration: InputDecoration(
-                        hintText: 'Nhập mật khẩu của bạn',
+                        hintText: 'Enter your password',
                         suffixIcon: IconButton(
                           icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
                           onPressed: () => setState(() => showPassword = !showPassword),
@@ -140,15 +140,15 @@ class _EmailScreenState extends State<EmailScreen> {
                     ),
                     if (isRegister) ...[
                       const SizedBox(height: 16),
-                      const Text('Họ và tên', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                      const Text('Full Name', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
                       TextField(
                         controller: firstNameController,
                         decoration: const InputDecoration(
-                          hintText: 'Nhập họ và tên của bạn',
+                          hintText: 'Enter your full name',
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Ngày sinh', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                      const Text('Date of Birth', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
                       InkWell(
                         onTap: () async {
                           final picked = await showDatePicker(
@@ -161,7 +161,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         },
                         child: InputDecorator(
                           decoration: const InputDecoration(
-                            hintText: 'Chọn ngày sinh',
+                            hintText: 'Select date of birth',
                           ),
                           child: Text(
                             dateOfBirth == null
@@ -172,36 +172,36 @@ class _EmailScreenState extends State<EmailScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Giới tính', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                      const Text('Gender', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 8),
                       Row(
                         children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setState(() => selectedGender = 'Nam'),
+                              onTap: () => setState(() => selectedGender = 'Male'),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: selectedGender == 'Nam' ? AppColors.pinkTheme : Colors.grey.shade300,
-                                    width: selectedGender == 'Nam' ? 2 : 1,
+                                    color: selectedGender == 'Male' ? AppColors.pinkTheme : Colors.grey.shade300,
+                                    width: selectedGender == 'Male' ? 2 : 1,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
-                                  color: selectedGender == 'Nam' ? AppColors.pinkTheme.withOpacity(0.1) : Colors.white,
+                                  color: selectedGender == 'Male' ? AppColors.pinkTheme.withOpacity(0.1) : Colors.white,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       Icons.male,
-                                      color: selectedGender == 'Nam' ? AppColors.pinkTheme : Colors.grey,
+                                      color: selectedGender == 'Male' ? AppColors.pinkTheme : Colors.grey,
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Nam',
+                                      'Male',
                                       style: TextStyle(
-                                        color: selectedGender == 'Nam' ? AppColors.pinkTheme : Colors.black,
-                                        fontWeight: selectedGender == 'Nam' ? FontWeight.bold : FontWeight.normal,
+                                        color: selectedGender == 'Male' ? AppColors.pinkTheme : Colors.black,
+                                        fontWeight: selectedGender == 'Male' ? FontWeight.bold : FontWeight.normal,
                                       ),
                                     ),
                                   ],
@@ -212,30 +212,30 @@ class _EmailScreenState extends State<EmailScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setState(() => selectedGender = 'Nữ'),
+                              onTap: () => setState(() => selectedGender = 'Female'),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: selectedGender == 'Nữ' ? AppColors.pinkTheme : Colors.grey.shade300,
-                                    width: selectedGender == 'Nữ' ? 2 : 1,
+                                    color: selectedGender == 'Female' ? AppColors.pinkTheme : Colors.grey.shade300,
+                                    width: selectedGender == 'Female' ? 2 : 1,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
-                                  color: selectedGender == 'Nữ' ? AppColors.pinkTheme.withOpacity(0.1) : Colors.white,
+                                  color: selectedGender == 'Female' ? AppColors.pinkTheme.withOpacity(0.1) : Colors.white,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       Icons.female,
-                                      color: selectedGender == 'Nữ' ? AppColors.pinkTheme : Colors.grey,
+                                      color: selectedGender == 'Female' ? AppColors.pinkTheme : Colors.grey,
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Nữ',
+                                      'Female',
                                       style: TextStyle(
-                                        color: selectedGender == 'Nữ' ? AppColors.pinkTheme : Colors.black,
-                                        fontWeight: selectedGender == 'Nữ' ? FontWeight.bold : FontWeight.normal,
+                                        color: selectedGender == 'Female' ? AppColors.pinkTheme : Colors.black,
+                                        fontWeight: selectedGender == 'Female' ? FontWeight.bold : FontWeight.normal,
                                       ),
                                     ),
                                   ],
@@ -246,12 +246,12 @@ class _EmailScreenState extends State<EmailScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      const Text('Số điện thoại', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                      const Text('Phone Number', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
                       TextField(
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
-                          hintText: 'Nhập số điện thoại của bạn',
+                          hintText: 'Enter your phone number',
                         ),
                       ),
                     ],
@@ -306,33 +306,20 @@ class _EmailScreenState extends State<EmailScreen> {
                     });
                     try {
                       if (isRegister) {
-                        // Validation trước khi gửi
+                        // Validation before sending
                         if (!isValidEmail(emailController.text.trim())) {
-                          throw Exception('Email không hợp lệ');
+                          throw Exception('Invalid email');
                         }
-                        
                         if (firstNameController.text.trim().length < 2) {
-                          throw Exception('Họ tên phải có ít nhất 2 ký tự');
+                          throw Exception('Full name must be at least 2 characters');
                         }
-                        
                         if (!isValidPhoneNumber(phoneController.text.trim())) {
-                          throw Exception('Số điện thoại không hợp lệ');
+                          throw Exception('Invalid phone number');
                         }
-                        
-                        // Format ngày sinh theo định dạng YYYY-MM-DD
                         String formattedDate = '${dateOfBirth!.year.toString().padLeft(4, '0')}-${dateOfBirth!.month.toString().padLeft(2, '0')}-${dateOfBirth!.day.toString().padLeft(2, '0')}';
-                        
-                        // Convert gender để match với backend (false: female, true: male)
-                        bool genderValue = selectedGender == 'Nam'; // Nam = true (male), Nữ = false (female)
+                        bool genderValue = selectedGender == 'Male'; // Male = true, Female = false
 
-                        print('Preparing registration with:');
-                        print('FullName: ${firstNameController.text.trim()}');
-                        print('Email: ${emailController.text.trim()}');
-                        print('DateOfBirth: ${formattedDate}');
-                        print('PhoneNumber: ${phoneController.text.trim()}');
-                        print('Gender: ${genderValue} (${selectedGender})');
-
-                        // Xử lý đăng ký
+                        // Registration
                         try {
                           final registerResult = await AuthService.register(
                             fullName: firstNameController.text.trim(),
@@ -342,41 +329,27 @@ class _EmailScreenState extends State<EmailScreen> {
                             phoneNumber: phoneController.text.trim(),
                             gender: genderValue,
                           );
-                          
-                          print('Registration successful: $registerResult');
-                          
-                          // Hiển thị thông báo thành công
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Đăng ký thành công! Đang đăng nhập...')),
+                            SnackBar(content: Text('Registration successful! Logging in...')),
                           );
-                          
-                          // Tự động đăng nhập sau khi đăng ký thành công
+                          // Auto login after registration
                           try {
-                            print('Auto-login after registration...');
                             final loginResult = await AuthService.login(
                               email: emailController.text.trim(),
                               password: passwordController.text,
                             );
-                            print('Auto-login successful: $loginResult');
-                            
-                            // Chờ một chút để token được lưu
                             await Future.delayed(Duration(milliseconds: 500));
-                            
-                            // Hiển thị thông báo đăng nhập thành công
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Đăng nhập thành công! Vui lòng nhập thông tin cơ thể.')),
+                              SnackBar(content: Text('Login successful! Please enter your body information.')),
                             );
                           } catch (loginError) {
-                            print('Auto-login failed: $loginError');
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Đăng ký thành công nhưng không thể tự động đăng nhập. Vui lòng đăng nhập lại.'),
+                                content: Text('Registration successful but auto-login failed. Please login again.'),
                                 backgroundColor: Colors.orange,
                               ),
                             );
                           }
-                          
-                          // Chuyển sang trang measurement sau khi đăng ký (và tự động đăng nhập)
                           Navigator.pushReplacementNamed(
                             context,
                             '/measurement',
@@ -390,27 +363,22 @@ class _EmailScreenState extends State<EmailScreen> {
                         }
                         setState(() {
                           isRegister = false;
-                          // Clear form fields
                           firstNameController.clear();
                           phoneController.clear();
                           dateOfBirth = null;
                           selectedGender = null;
-                          // Keep email and password for convenience
                         });
                       } else {
-                        // Xử lý đăng nhập
+                        // Login
                         final loginResult = await AuthService.login(
                           email: emailController.text.trim(),
                           password: passwordController.text,
                         );
-                        
-                        print('Login result: $loginResult');
-                        print('Login result keys: ${loginResult.keys.toList()}');
-                        
-                        // Lấy role từ profile để đảm bảo chính xác
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Login successful!')),
+                        );
                         String? profileJson = await AuthService.getUserProfile();
                         String userRole = 'USER';
-                        
                         if (profileJson != null) {
                           final profileMap = jsonDecode(profileJson);
                           if (profileMap is Map && profileMap.containsKey('data')) {
@@ -420,33 +388,18 @@ class _EmailScreenState extends State<EmailScreen> {
                             }
                           }
                         }
-                        
-                        print('User role from profile: $userRole');
-                        
-                        // Hiển thị thông báo thành công
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Đăng nhập thành công!')),
-                        );
-                        
-                        // Chuyển hướng dựa trên role
                         switch (userRole) {
                           case 'OWNER':
                           case 'ADMIN':
-                            // Chuyển sang dashboard cho owner và admin
                             Navigator.pushReplacementNamed(context, '/admin');
                             break;
                           case 'COACH':
-                            // Chuyển sang coach dashboard
                             Navigator.pushReplacementNamed(context, '/coach_dashboard');
                             break;
                           case 'CUSTOMER':
                           case 'USER':
                           default:
-                            // Xử lý customer - chuyển sang workout_plan
-                            // Thử các cách khác nhau để lấy userId
                             String userId = '';
-                            
-                            // Thử lấy từ các field phổ biến
                             if (loginResult.containsKey('user_id')) {
                               userId = loginResult['user_id']?.toString() ?? '';
                             } else if (loginResult.containsKey('id')) {
@@ -459,24 +412,14 @@ class _EmailScreenState extends State<EmailScreen> {
                                 userId = user['id']?.toString() ?? user['user_id']?.toString() ?? '';
                               }
                             }
-                            
-                            // Nếu không có userId nhưng có accessToken, dùng email làm userId tạm thời
                             if (userId.isEmpty && loginResult.containsKey('accessToken')) {
                               userId = emailController.text.trim();
-                              print('Using email as temporary userId: $userId');
                             }
-                            
-                            print('Extracted userId: $userId');
-                            
                             if (userId.isEmpty) {
-                              print('Available login result data: $loginResult');
-                              throw Exception('Không thể lấy user ID từ server. Available keys: ${loginResult.keys.toList()}');
+                              throw Exception('Cannot get user ID from server. Available keys: ${loginResult.keys.toList()}');
                             }
-                            
-                            // Lấy gender từ profile
                             String? profileJson = await AuthService.getUserProfile();
-                            print('Profile JSON: ' + (profileJson ?? 'null'));
-                            bool isFemale = false; // mặc định nam
+                            bool isFemale = false;
                             if (profileJson != null) {
                               final profileMap = jsonDecode(profileJson);
                               if (profileMap is Map && profileMap.containsKey('data')) {
@@ -484,29 +427,24 @@ class _EmailScreenState extends State<EmailScreen> {
                                 if (data is Map && data.containsKey('gender')) {
                                   final g = data['gender'];
                                   if (g is bool) {
-                                    isFemale = g == false; // false = female, true = male
+                                    isFemale = g == false;
                                   } else if (g is int) {
-                                    isFemale = g == 0; // 0 = female, 1 = male
+                                    isFemale = g == 0;
                                   } else {
-                                    isFemale = false; // default to male
+                                    isFemale = false;
                                   }
                                 }
                               }
                             }
-                            
-                            // Cập nhật selectedGender để đồng bộ radio button
                             setState(() {
-                              selectedGender = isFemale ? 'Nữ' : 'Nam';
+                              selectedGender = isFemale ? 'Female' : 'Male';
                             });
-                            print('Gender from profile - isFemale: $isFemale, selectedGender: $selectedGender');
-                            
-                            // Chuyển đến trang workout_plan với userId và isFemale
                             Navigator.pushReplacementNamed(
                               context,
                               '/workout',
                               arguments: {
                                 'userId': userId,
-                                'isFemale': isFemale, // false = male, true = female for UI
+                                'isFemale': isFemale,
                               },
                             );
                             break;
@@ -514,14 +452,12 @@ class _EmailScreenState extends State<EmailScreen> {
                       }
                     } catch (e) {
                       setState(() {
-                        // Làm sạch error message để hiển thị user-friendly hơn
                         String cleanError = e.toString();
                         if (cleanError.startsWith('Exception: ')) {
                           cleanError = cleanError.substring('Exception: '.length);
                         }
                         errorMessage = cleanError;
                       });
-                      print('Full error details: $e');
                     } finally {
                       setState(() {
                         isLoading = false;
@@ -533,7 +469,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         )
                       : Text(
-                          isRegister ? 'ĐĂNG KÝ' : 'ĐĂNG NHẬP',
+                          isRegister ? 'REGISTER' : 'SIGN IN',
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, letterSpacing: 1),
                         ),
                 ),
@@ -545,7 +481,7 @@ class _EmailScreenState extends State<EmailScreen> {
     );
   }
 
-    bool isFormValid() {
+  bool isFormValid() {
     if (isRegister) {
       // Kiểm tra các trường cho chế độ Đăng ký
       return emailController.text.isNotEmpty &&

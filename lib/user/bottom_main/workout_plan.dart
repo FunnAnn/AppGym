@@ -102,7 +102,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     final List<Map<String, String>> plans = isForFemale!
         ? [
             {
-              'title': 'WEIGHT LOST',
+              'title': 'WEIGHT LOSS',
               'image': 'assets/images/plan_weight_loss.jpg',
             },
             {
@@ -152,13 +152,13 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Dòng trạng thái và nút arrow
+          // Status line and arrow button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
                 Text(
-                  "DÀNH CHO, ${isForFemale! ? "NỮ" : "NAM"}",
+                  "FOR ${isForFemale! ? "FEMALE" : "MALE"}",
                   style: const TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 16,
@@ -183,14 +183,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               ],
             ),
           ),
-          // Cụm radio button chọn giới tính
+          // Gender radio buttons
           if (showGenderSelector)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               child: Row(
                 children: [
                   _CustomRadio(
-                    label: "NAM",
+                    label: "MALE",
                     value: false,
                     groupValue: isForFemale!,
                     onChanged: (value) {
@@ -202,7 +202,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   ),
                   const SizedBox(width: 24),
                   _CustomRadio(
-                    label: "NỮ",
+                    label: "FEMALE",
                     value: true,
                     groupValue: isForFemale!,
                     onChanged: (value) {
@@ -337,7 +337,7 @@ class _CustomRadio extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.blueGrey,
               fontSize: 16,
               fontWeight: FontWeight.w500,

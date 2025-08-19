@@ -30,7 +30,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     try {
       final userId = await AuthService.getUserIdWithFallback();
-      if (userId == null) throw Exception('Không tìm thấy user ID');
+      if (userId == null) throw Exception('User ID not found');
 
       await AuthService.changePassword(
         userId: userId,
@@ -59,7 +59,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đổi mật khẩu', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text('Change Password', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: AppColors.pinkTheme,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -74,7 +74,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
-                  'Đổi mật khẩu',
+                  'Change Password',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 TextFormField(
                   controller: _oldPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Mật khẩu cũ',
+                    labelText: 'Old Password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
@@ -105,13 +105,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   obscureText: !_showOldPassword,
                   validator: (value) =>
-                      value == null || value.isEmpty ? 'Nhập mật khẩu cũ' : null,
+                      value == null || value.isEmpty ? 'Enter your old password' : null,
                 ),
                 const SizedBox(height: 18),
                 TextFormField(
                   controller: _newPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Mật khẩu mới',
+                    labelText: 'New Password',
                     prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
@@ -130,13 +130,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   obscureText: !_showNewPassword,
                   validator: (value) =>
-                      value == null || value.length < 6 ? 'Ít nhất 6 ký tự' : null,
+                      value == null || value.length < 6 ? 'At least 6 characters' : null,
                 ),
                 const SizedBox(height: 18),
                 TextFormField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Nhập lại mật khẩu mới',
+                    labelText: 'Confirm New Password',
                     prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
@@ -155,7 +155,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   obscureText: !_showConfirmPassword,
                   validator: (value) =>
-                      value != _newPasswordController.text ? 'Mật khẩu không khớp' : null,
+                      value != _newPasswordController.text ? 'Passwords do not match' : null,
                 ),
                 const SizedBox(height: 32),
                 _isLoading
@@ -172,7 +172,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ),
                         onPressed: _changePassword,
                         child: const Text(
-                          'Đổi mật khẩu',
+                          'Change Password',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),

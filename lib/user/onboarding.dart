@@ -91,7 +91,7 @@ class _OnboardingPagerState extends State<OnboardingPager> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Create your own workout program',
+                    'Chat with AI Coach',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -100,7 +100,7 @@ class _OnboardingPagerState extends State<OnboardingPager> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Create your own workout plan using our diverse and free exercise database.',
+                    'Get personalized workout plans with our AI coach! Ask questions, get advice, and receive tailored recommendations to achieve your fitness goals.',
                     style: TextStyle(
                         fontSize: 15, color: Colors.black54, height: 1.4),
                     textAlign: TextAlign.center,
@@ -129,7 +129,7 @@ class _OnboardingPagerState extends State<OnboardingPager> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Choose a coach',
+                    'BMI Calculator & Calorie Calculator',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -137,7 +137,7 @@ class _OnboardingPagerState extends State<OnboardingPager> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Achieve results quickly with world champion coaches! Complete your coach’s workouts anywhere, get continuous online support, and access a variety of exercises.',
+                    'Calculate your Body Mass Index (BMI) and daily calorie needs with our easy-to-use tools. Track your progress and stay on top of your fitness journey.',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black54,

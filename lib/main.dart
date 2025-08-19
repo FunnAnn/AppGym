@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_app/user/onboarding.dart';
 import 'admin/admin_layout.dart';
 import 'screens/login.dart';
@@ -8,16 +9,22 @@ import 'admin/dashboard.dart';
 import 'user/bottom_main/calendar.dart';
 import 'user/bottom_main/account_page.dart';
 import 'user/bottom_main/package.dart';
-import 'user/gender.dart';
 import 'screens/email.dart';
 import 'admin/dashboard.dart';
 import '../../coach/dashboard_coach.dart';
 import 'dart:async';
 import 'screens/reset_password.dart';
 import 'package:app_links/app_links.dart';
+import '../theme_notifier.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -72,12 +79,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Body Shape',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFf70d6f)),
+        brightness: Brightness.light,
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFf70d6f), brightness: Brightness.dark),
+        brightness: Brightness.dark,
+      ),
+      themeMode: themeNotifier.themeMode, // <-- dùng themeMode động
       home: RootPage(
         pendingResetToken: _pendingResetToken,
         onResetTokenHandled: (token) {
@@ -95,7 +110,6 @@ class _MyAppState extends State<MyApp> {
         '/calendar': (context) => WorkoutCalendarPage(),
         '/account': (context) => AccountPage(),
         '/package': (context) => PackagesOverviewPage(),
-        '/gender': (context) => GenderSelectScreen(),
         '/email': (context) => EmailScreen(),
         '/coach_dashboard': (context) => DashboardCoachPage(),
         '/reset_password': (context) {

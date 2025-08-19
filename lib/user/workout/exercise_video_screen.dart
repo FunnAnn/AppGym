@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import '/../api_service/workout_log_service.dart';
 import '../../api_service/plan_exercise_service.dart';
+import '../../model/plan_exercise.dart'; // Import the file where Data is defined
 import '../bottom_main/bottom.dart'; // Thêm import này
+import '../../theme/app_colors.dart';
 
 class ExerciseVideoScreen extends StatefulWidget {
   final String videoUrl;
   final String? title;
-  final int planExerciseId; // <-- thêm dòng này
+  final int planExerciseId;
+  final List<Data> exercises; // Add the list of exercises
+  final int currentIndex; // Add the current index
 
   const ExerciseVideoScreen({
     super.key,
     required this.videoUrl,
     this.title,
-    required this.planExerciseId, // <-- thêm dòng này
+    required this.planExerciseId,
+    required this.exercises, // Pass the list of exercises
+    required this.currentIndex, // Pass the current index
   });
 
   @override
@@ -61,6 +67,15 @@ class _ExerciseVideoScreenState extends State<ExerciseVideoScreen> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(processedUrl));
       await _controller!.initialize();
       await _controller!.setLooping(true);
+
+      // Add listener to restart playback when video finishes
+      _controller!.addListener(() {
+        if (_controller!.value.position == _controller!.value.duration) {
+          _controller!.seekTo(Duration.zero);
+          _controller!.play();
+        }
+      });
+
       setState(() {
         _isLoading = false;
       });
@@ -70,6 +85,15 @@ class _ExerciseVideoScreenState extends State<ExerciseVideoScreen> {
         _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
         await _controller!.initialize();
         await _controller!.setLooping(true);
+
+        // Add listener to restart playback when video finishes
+        _controller!.addListener(() {
+          if (_controller!.value.position == _controller!.value.duration) {
+            _controller!.seekTo(Duration.zero);
+            _controller!.play();
+          }
+        });
+
         setState(() {
           _isLoading = false;
         });
@@ -78,7 +102,7 @@ class _ExerciseVideoScreenState extends State<ExerciseVideoScreen> {
         setState(() {
           _isLoading = false;
           _hasError = true;
-          _errorMessage = 'Không thể phát video. Đường dẫn hoặc định dạng không hợp lệ.';
+          _errorMessage = 'Unable to play video. Invalid URL or format.';
         });
       }
     }
@@ -121,243 +145,191 @@ class _ExerciseVideoScreenState extends State<ExerciseVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        title: Text(widget.title ?? 'Exercise Video', style: const TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        title: Text(
+          widget.title ?? 'Exercise Video',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white, // Set text color to white
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.pinkTheme, // Solid pink theme for AppBar
+        iconTheme: const IconThemeData(color: Colors.white), // Set back arrow color to white
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _hasError
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error, color: Colors.red, size: 48),
-                      const SizedBox(height: 16),
-                      Text(_errorMessage, style: const TextStyle(color: Colors.red)),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _initializeVideo,
-                        child: const Text('Thử lại'),
-                      ),
-                    ],
-                  ),
-                )
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Video player
-                      if (_controller != null && _controller!.value.isInitialized)
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: AspectRatio(
-                              aspectRatio: _controller!.value.aspectRatio,
-                              child: VideoPlayer(_controller!),
-                            ),
-                          ),
-                        )
-                      else
-                        Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: const Center(child: Text('Không có video')),
-                        ),
-                      const SizedBox(height: 32),
-                      // Workout Log Section
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
-                        margin: const EdgeInsets.only(bottom: 32),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(32),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.09),
-                              blurRadius: 32,
-                              offset: const Offset(0, 12),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Workout Log',
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.pink,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Rep circle
-                                Container(
-                                  width: 70,
-                                  height: 70,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.teal, width: 4),
-                                    color: Colors.teal.withOpacity(0.09),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.teal.withOpacity(0.08),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    reps.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.teal,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 24),
-                                // Rep input
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.circular(18),
-                                    ),
-                                    child: TextField(
-                                      controller: logController,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                                      decoration: InputDecoration(
-                                        hintText: 'Rep',
-                                        hintStyle: TextStyle(color: Colors.grey[400]),
-                                        border: InputBorder.none,
-                                        contentPadding: const EdgeInsets.symmetric(vertical: 22),
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 18),
-                                // Add set button
-                                Material(
-                                  color: Colors.transparent,
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                      color: currentSet < totalSet ? Colors.pink : Colors.grey[300],
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        if (currentSet < totalSet)
-                                          BoxShadow(
-                                            color: Colors.pink.withOpacity(0.18),
-                                            blurRadius: 16,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                      ],
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(Icons.add, color: Colors.white, size: 36),
-                                      onPressed: currentSet < totalSet
-                                          ? () async {
-                                              if (logController.text.trim().isEmpty) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Vui lòng nhập số rep trước!')),
-                                                );
-                                                return;
-                                              }
-                                              setState(() {
-                                                if (currentSet < totalSet) currentSet += 1;
-                                              });
-                                              try {
-                                                await WorkoutLogService.createWorkoutLog(
-                                                  customerId: customerId,
-                                                  planId: planId,
-                                                  exerciseId: exerciseId,
-                                                  workoutDate: DateTime.now().toIso8601String().substring(0, 10),
-                                                  actualSets: 1,
-                                                  actualReps: int.tryParse(logController.text) ?? reps,
-                                                  actualWeight: weight,
-                                                  notes: "",
-                                                );
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Đã lưu workout log!')),
-                                                );
-                                              } catch (e) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Lưu workout log thất bại!')),
-                                                );
-                                              }
-                                            }
-                                          : null,
-                                    ),
-                                  ),
-                                ),
-                                // Set counter
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '$currentSet/$totalSet',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold, fontSize: 24, color: Colors.pink),
-                                      ),
-                                      const Text(
-                                        'Set',
-                                        style: TextStyle(fontSize: 16, color: Colors.black54),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (weight != 0)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 28),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.fitness_center, color: Colors.teal, size: 26),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      'Weight: $weight kg',
-                                      style: const TextStyle(
-                                          fontSize: 18, fontWeight: FontWeight.w600, color: Colors.teal),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
+      body: Column(
+        children: [
+          // Workout Log Section (Above the video)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Display current reps
+                CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.teal,
+                  child: Text(
+                    logController.text.isNotEmpty
+                        ? logController.text
+                        : reps.toString(),
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
+                const SizedBox(width: 16),
+
+                // Input for reps
+                Expanded(
+                  child: TextField(
+                    controller: logController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Enter reps',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Add Set Button
+                ElevatedButton(
+                  onPressed: currentSet < totalSet
+                      ? () async {
+                          if (logController.text.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please enter the number of reps!')),
+                            );
+                            return;
+                          }
+
+                          setState(() {
+                            if (currentSet < totalSet) currentSet += 1;
+                          });
+
+                          try {
+                            String formattedDate =
+                                DateTime.now().toString().split(' ')[0];
+
+                            await WorkoutLogService.createWorkoutLog(
+                              customerId: customerId,
+                              planId: planId,
+                              exerciseId: exerciseId,
+                              workoutDate: formattedDate,
+                              actualSets: 1,
+                              actualReps: int.tryParse(logController.text) ?? reps,
+                              actualWeight: weight,
+                              notes: "",
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Workout log saved successfully!')),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Failed to save workout log: $e')),
+                            );
+                          }
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: AppColors.pinkTheme,
+                  ),
+                  child: const Text(
+                    'Add Set',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Video Player Section
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _hasError
+                    ? Center(
+                        child: Text(
+                          _errorMessage,
+                          style: const TextStyle(color: Colors.red, fontSize: 16),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 80, // Reduced height for the video frame
+                        child: AspectRatio(
+                          aspectRatio: _controller!.value.aspectRatio,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12), // Optional rounded corners
+                            child: VideoPlayer(_controller!),
+                          ),
+                        ),
+                      ),
+          ),
+
+          // Display current set progress (Moved below the video)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                Text(
+                  '$currentSet/$totalSet Set',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  value: currentSet / totalSet,
+                  backgroundColor: AppColors.pinkThemeLight,
+                  color: AppColors.pinkTheme,
+                ),
+              ],
+            ),
+          ),
+
+          // Next Exercise Button
+          if (currentSet == totalSet && widget.currentIndex < widget.exercises.length - 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  final nextExercise = widget.exercises[widget.currentIndex + 1];
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ExerciseVideoScreen(
+                        videoUrl: nextExercise.exercise?.videoUrl ?? '',
+                        title: nextExercise.exercise?.name ?? 'Next Exercise',
+                        planExerciseId: nextExercise.planExerciseId!,
+                        exercises: widget.exercises, // Pass the list of exercises
+                        currentIndex: widget.currentIndex + 1, // Increment the index
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  backgroundColor: AppColors.pinkTheme,
+                ),
+                child: const Text(
+                  'Next Exercise',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+        ],
+      ),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _bottomIndex,
         onTap: (index) {

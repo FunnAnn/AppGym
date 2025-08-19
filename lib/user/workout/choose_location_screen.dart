@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../bottom_main/bottom.dart';
 import 'at_home_plan_screen.dart'; 
+import 'at_gym_plan_screen.dart';
 
 class ChooseLocationScreen extends StatelessWidget {
   final String? goal;
@@ -26,7 +27,13 @@ class ChooseLocationScreen extends StatelessWidget {
             _LocationCard(
               title: 'AT GYM',
               image: 'assets/images/gym.png',
-              onTap: () async {
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AtGymPlanScreen(goal: goal, image: image),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 16),

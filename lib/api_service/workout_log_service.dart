@@ -31,7 +31,7 @@ class WorkoutLogService {
 
     final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 201) {
       print('API error: ${response.body}');
       throw Exception('Failed to create workout log');
     }

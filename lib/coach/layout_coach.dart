@@ -12,40 +12,40 @@ class LayoutCoach extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     try {
-      // Hiển thị dialog xác nhận
+      // Show confirmation dialog
       final shouldLogout = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Đăng xuất'),
-          content: Text('Bạn có chắc chắn muốn đăng xuất?'),
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Hủy'),
+              child: Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Đăng xuất'),
+              child: Text('Logout'),
             ),
           ],
         ),
       );
 
       if (shouldLogout == true) {
-        // Thực hiện logout
+        // Perform logout
         await AuthService.logout();
         
-        // Chuyển về màn hình đăng nhập và xóa tất cả route trước đó
+        // Navigate to login screen and remove all previous routes
         Navigator.of(context).pushNamedAndRemoveUntil(
           '/login', 
           (route) => false,
         );
       }
     } catch (e) {
-      // Hiển thị thông báo lỗi
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Lỗi khi đăng xuất: $e'),
+          content: Text('Error while logging out: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -117,7 +117,7 @@ class LayoutCoach extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.video_library_outlined, color: AppColors.pinkTheme),
-                title: Text('Excercise'),
+                title: Text('Exercise'),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CoachExercisePage()));
                 },
@@ -128,7 +128,7 @@ class LayoutCoach extends StatelessWidget {
                 onTap: () {},
               ),
               
-              // Divider và logout
+              // Divider and logout
               Divider(
                 color: Colors.grey[300],
                 thickness: 1,
@@ -138,7 +138,7 @@ class LayoutCoach extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.red),
                 title: Text(
-                  'Đăng xuất',
+                  'Logout',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () => _logout(context),
@@ -155,7 +155,7 @@ class LayoutCoach extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => _logout(context),
-            tooltip: 'Đăng xuất',
+            tooltip: 'Logout',
           ),
         ],
       ),

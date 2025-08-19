@@ -54,7 +54,9 @@ class AtHomeDayDetailScreen extends StatelessWidget {
                     builder: (_) => ExerciseVideoScreen(
                       videoUrl: ex.videoUrl!,
                       title: ex.name,
-                      planExerciseId: exercises[idx].planExerciseId!, 
+                      planExerciseId: exercises[idx].planExerciseId!,
+                      exercises: exercises, // Pass the list of exercises
+                      currentIndex: idx, // Pass the current index
                     ),
                   ),
                 );

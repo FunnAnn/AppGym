@@ -43,7 +43,7 @@ class _DashboardCoachPageState extends State<DashboardCoachPage> {
     if (schedule != null && schedule.data != null) {
       final Map<DateTime, List<Map<String, String>>> events = {};
       for (final item in schedule.data!) {
-        if (item.startDate != null) {
+        if (item.startDate != null && item.description == 'With Coach') {
           final date = DateTime.tryParse(item.startDate!);
           if (date != null) {
             final key = DateTime.utc(date.year, date.month, date.day);

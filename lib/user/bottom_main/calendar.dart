@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'bottom.dart';
 import '../../theme/app_colors.dart'; 
 import '../../api_service/schedule_service.dart';
+import '../../api_service/auth_service.dart';
 
 Future<List<Map<String, dynamic>>> fetchSchedules() async {
   final prefs = await SharedPreferences.getInstance();
@@ -87,112 +88,6 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
     });
   }
 
-  void _showAddWorkoutDialog() {
-    final _typeController = TextEditingController();
-    bool _withCoach = false;
-    TimeOfDay? _selectedTime;
-    final _timeController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Add Workout'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: _typeController,
-                decoration: const InputDecoration(labelText: 'Workout Title'),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () async {
-                  final picked = await showTimePicker(
-                    context: context,
-                    initialTime: _selectedTime ?? TimeOfDay.now(),
-                  );
-                  if (picked != null) {
-                    setState(() {
-                      _selectedTime = picked;
-                      _timeController.text = picked.format(context);
-                    });
-                  }
-                },
-                child: AbsorbPointer(
-                  child: TextField(
-                    controller: _timeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Time',
-                      suffixIcon: Icon(Icons.access_time),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Checkbox(
-                    value: _withCoach,
-                    onChanged: (value) {
-                      setState(() {
-                        _withCoach = value ?? false;
-                      });
-                    },
-                  ),
-                  const Text('With Coach'),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                final userMe = json.decode(prefs.getString('user_me') ?? '{}');
-                final customerId = userMe['data']['user_id'];
-                final coachId = userMe['data']['coach_customers'][0]['coach_id'];
-
-                final selectedDay = _selectedDay ?? DateTime.now();
-                final startDate = DateTime(
-                  selectedDay.year,
-                  selectedDay.month,
-                  selectedDay.day,
-                  _selectedTime?.hour ?? 8,
-                  _selectedTime?.minute ?? 0,
-                );
-                final endDate = startDate.add(const Duration(hours: 1));
-
-                final success = await ScheduleService().createSchedule(
-                  customerId: customerId,
-                  coachId: coachId,
-                  title: _typeController.text.trim(),
-                  startDate: startDate.toIso8601String(),
-                  endDate: endDate.toIso8601String(),
-                  description: _withCoach ? 'With Coach' : '',
-                );
-                if (success) {
-                  await _fetchSchedules();
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to create schedule')),
-                  );
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,12 +103,7 @@ class _WorkoutCalendarPageState extends State<WorkoutCalendarPage> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _showAddWorkoutDialog,
-          ),
-        ],
+        actions: [], // Remove the add button from actions
       ),
       body: Column(
         children: [
