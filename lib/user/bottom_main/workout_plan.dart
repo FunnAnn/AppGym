@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'bottom.dart';
-import '../workout/choose_location.dart';
 import '../../theme/app_colors.dart';
 import '../../api_service/auth_service.dart';
+import '../../api_service/training_plan_service.dart';
+import '../../model/training_plan.dart';
+import '../workout/choose_location_screen.dart';
 
 class WorkoutPlanScreen extends StatefulWidget {
   const WorkoutPlanScreen({super.key});
@@ -18,6 +20,9 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   bool showGenderSelector = false;
   bool isLoading = true;
 
+  List<Data> allPlans = [];
+  bool isApiLoading = true;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -31,6 +36,15 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
         fetchGenderFromProfile();
       }
       _initialized = true;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Only fetch after gender is known
+    if (isForFemale != null) {
+      fetchPlans();
     }
   }
 
@@ -64,6 +78,18 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
       isForFemale = false; // Default to male (API true)
       isLoading = false;
     });
+  }
+
+  Future<void> fetchPlans() async {
+    setState(() => isApiLoading = true);
+    try {
+      final result = await PlanService.fetchAllPlans();
+      allPlans = result.data ?? [];
+    } catch (e) {
+      // Handle error
+      allPlans = [];
+    }
+    setState(() => isApiLoading = false);
   }
 
   @override
@@ -114,25 +140,25 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pinkTheme,
         elevation: 0,
         title: const Text(
-          'Chọn kế hoạch tập luyện của bạn',
-          style: TextStyle(color: Colors.black),
+          'WORKOUT PLANS',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Dòng trạng thái và nút arrow
+          // Status line and arrow button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
                 Text(
-                  "DÀNH CHO, ${isForFemale! ? "NỮ" : "NAM"}",
+                  "FOR ${isForFemale! ? "FEMALE" : "MALE"}",
                   style: const TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 16,
@@ -157,14 +183,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
               ],
             ),
           ),
-          // Cụm radio button chọn giới tính
+          // Gender radio buttons
           if (showGenderSelector)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               child: Row(
                 children: [
                   _CustomRadio(
-                    label: "NAM",
+                    label: "MALE",
                     value: false,
                     groupValue: isForFemale!,
                     onChanged: (value) {
@@ -176,7 +202,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
                   ),
                   const SizedBox(width: 24),
                   _CustomRadio(
-                    label: "NỮ",
+                    label: "FEMALE",
                     value: true,
                     groupValue: isForFemale!,
                     onChanged: (value) {
@@ -250,7 +276,7 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {
@@ -311,7 +337,7 @@ class _CustomRadio extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.blueGrey,
               fontSize: 16,
               fontWeight: FontWeight.w500,

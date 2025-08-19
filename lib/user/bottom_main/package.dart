@@ -23,9 +23,13 @@ class Package {
   factory Package.fromApi(PackageModel.Data packageData) {
     return Package(
       name: packageData.packageName ?? 'Unknown Package',
-      price: packageData.price != null ? '${packageData.price?.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} đ' : 'N/A',
+      price: packageData.price != null
+          ? '${packageData.price?.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} VND'
+          : 'N/A',
       duration: packageData.durationDays != null ? '${packageData.durationDays} days' : 'N/A',
-      features: packageData.description != null ? packageData.description!.split('\n').where((line) => line.trim().isNotEmpty).toList() : ['No features available'],
+      features: packageData.description != null
+          ? packageData.description!.split('\n').where((line) => line.trim().isNotEmpty).toList()
+          : ['No features available'],
       isPopular: false, // You can set logic for isPopular if needed
     );
   }
@@ -48,7 +52,10 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
   }
 
   Future<void> fetchPackages() async {
-    setState(() { isLoading = true; error = null; });
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
     try {
       final packageService = PackageService();
       final apiList = await packageService.getAllPackages();
@@ -57,7 +64,9 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
       error = e.toString();
       print('Error fetching packages: $e');
     }
-    setState(() { isLoading = false; });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -65,8 +74,9 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(
-          'Membership Packages',
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'MEMBERSHIP PACKAGES',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -83,15 +93,15 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, size: 64, color: Colors.red),
-                      SizedBox(height: 16),
-                      Text('Error loading packages', style: TextStyle(fontSize: 18)),
-                      SizedBox(height: 8),
-                      Text(error!, style: TextStyle(color: Colors.grey)),
-                      SizedBox(height: 16),
+                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const SizedBox(height: 16),
+                      const Text('Error loading packages', style: TextStyle(fontSize: 18)),
+                      const SizedBox(height: 8),
+                      Text(error!, style: const TextStyle(color: Colors.grey)),
+                      const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: fetchPackages,
-                        child: Text('Retry'),
+                        child: const Text('Retry'),
                       ),
                     ],
                   ),
@@ -100,7 +110,7 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
                           Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey),
                           SizedBox(height: 16),
                           Text('No packages available', style: TextStyle(fontSize: 18)),
@@ -115,7 +125,7 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Choose Your Perfect Plan',
                               style: TextStyle(
                                 fontSize: 24,
@@ -123,7 +133,7 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                                 color: AppColors.pinkTheme,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               'Select the membership that fits your fitness goals',
                               style: TextStyle(
@@ -131,12 +141,12 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
                                 color: Colors.grey[600],
                               ),
                             ),
-                            SizedBox(height: 24),
+                            const SizedBox(height: 24),
                             ListView.separated(
                               shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: packages.length,
-                              separatorBuilder: (context, index) => SizedBox(height: 16),
+                              separatorBuilder: (context, index) => const SizedBox(height: 16),
                               itemBuilder: (context, index) {
                                 final package = packages[index];
                                 return PackageCard(package: package);
@@ -154,7 +164,7 @@ class _PackagesOverviewPageState extends State<PackagesOverviewPage> {
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
+            showQRDialog(context);
           } else if (index == 3) {
             // Do nothing
           } else if (index == 4) {
@@ -176,9 +186,9 @@ class PackageCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: package.isPopular 
-            ? [AppColors.pinkTheme, Color(0xFFFF6B9D)]
-            : [Colors.white, Colors.grey[50]!],
+          colors: package.isPopular
+              ? [AppColors.pinkTheme, const Color(0xFFFF6B9D)]
+              : [Colors.white, Colors.grey[50]!],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -187,7 +197,7 @@ class PackageCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -199,15 +209,15 @@ class PackageCard extends StatelessWidget {
               top: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: const BoxDecoration(
                   color: Colors.orange,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20),
                     bottomLeft: Radius.circular(20),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   '🔥 POPULAR',
                   style: TextStyle(
                     color: Colors.white,
@@ -217,7 +227,6 @@ class PackageCard extends StatelessWidget {
                 ),
               ),
             ),
-          
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -232,8 +241,7 @@ class PackageCard extends StatelessWidget {
                     color: package.isPopular ? Colors.white : AppColors.pinkTheme,
                   ),
                 ),
-                SizedBox(height: 8),
-                
+                const SizedBox(height: 8),
                 // Price and duration row
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -246,13 +254,13 @@ class PackageCard extends StatelessWidget {
                         color: package.isPopular ? Colors.white : Colors.green[700],
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: package.isPopular 
-                          ? Colors.white.withOpacity(0.2)
-                          : AppColors.pinkTheme.withOpacity(0.1),
+                        color: package.isPopular
+                            ? Colors.white.withOpacity(0.2)
+                            : AppColors.pinkTheme.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -266,17 +274,15 @@ class PackageCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                
-                SizedBox(height: 20),
-                
+                const SizedBox(height: 20),
                 // Features section
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: package.isPopular 
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.grey[100],
+                    color: package.isPopular
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.grey[100],
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -290,8 +296,7 @@ class PackageCard extends StatelessWidget {
                           color: package.isPopular ? Colors.white : AppColors.pinkTheme,
                         ),
                       ),
-                      SizedBox(height: 12),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       ...package.features.take(5).map((feature) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
@@ -301,7 +306,7 @@ class PackageCard extends StatelessWidget {
                               size: 20,
                               color: package.isPopular ? Colors.white : AppColors.pinkTheme,
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 feature,

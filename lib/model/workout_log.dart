@@ -1,12 +1,12 @@
-class PlanExcercise {
+class Workout_logs {
   List<Data>? data;
   String? message;
   int? statusCode;
   String? date;
 
-  PlanExcercise({this.data, this.message, this.statusCode, this.date});
+  Workout_logs({this.data, this.message, this.statusCode, this.date});
 
-  PlanExcercise.fromJson(Map<String, dynamic> json) {
+  Workout_logs.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
@@ -31,68 +31,57 @@ class PlanExcercise {
 }
 
 class Data {
-  int? planExerciseId;
-  int? dayNumber;
-  int? sets;
-  int? reps;
-  int? weight;
-  int? restTime;
+  int? logId;
+  int? actualSets;
+  int? actualReps;
+  int? actualWeight;
+  String? notes;
+  String? workoutDate;
   TrainingPlans? trainingPlans;
   Exercise? exercise;
   Coaches? coaches;
   Customer? customer;
 
   Data(
-      {this.planExerciseId,
-      this.dayNumber,
-      this.sets,
-      this.reps,
-      this.weight,
-      this.restTime,
+      {this.logId,
+      this.actualSets,
+      this.actualReps,
+      this.actualWeight,
+      this.notes,
+      this.workoutDate,
       this.trainingPlans,
       this.exercise,
       this.coaches,
       this.customer});
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    int? parseInt(dynamic value) {
-      if (value == null) return null;
-      if (value is int) return value;
-      if (value is double) return value.toInt();
-      if (value is String) return int.tryParse(value);
-      return null;
-    }
-
-    return Data(
-      planExerciseId: parseInt(json['plan_exercise_id']),
-      dayNumber: parseInt(json['day_number']),
-      sets: parseInt(json['sets']),
-      reps: parseInt(json['reps']),
-      weight: parseInt(json['weight']),
-      restTime: parseInt(json['rest_time']),
-      trainingPlans: json['training_plans'] != null
-          ? TrainingPlans.fromJson(json['training_plans'])
-          : null,
-      exercise: json['exercise'] != null
-          ? Exercise.fromJson(json['exercise'])
-          : null,
-      coaches: json['coaches'] != null
-          ? Coaches.fromJson(json['coaches'])
-          : null,
-      customer: json['customer'] != null
-          ? Customer.fromJson(json['customer'])
-          : null,
-    );
+  Data.fromJson(Map<String, dynamic> json) {
+    logId = json['log_id'];
+    actualSets = json['actual_sets'];
+    actualReps = json['actual_reps'];
+    actualWeight = json['actual_weight'];
+    notes = json['notes'];
+    workoutDate = json['workout_date'];
+    trainingPlans = json['training_plans'] != null
+        ? new TrainingPlans.fromJson(json['training_plans'])
+        : null;
+    exercise = json['exercise'] != null
+        ? new Exercise.fromJson(json['exercise'])
+        : null;
+    coaches =
+        json['coaches'] != null ? new Coaches.fromJson(json['coaches']) : null;
+    customer = json['customer'] != null
+        ? new Customer.fromJson(json['customer'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['plan_exercise_id'] = this.planExerciseId;
-    data['day_number'] = this.dayNumber;
-    data['sets'] = this.sets;
-    data['reps'] = this.reps;
-    data['weight'] = this.weight;
-    data['rest_time'] = this.restTime;
+    data['log_id'] = this.logId;
+    data['actual_sets'] = this.actualSets;
+    data['actual_reps'] = this.actualReps;
+    data['actual_weight'] = this.actualWeight;
+    data['notes'] = this.notes;
+    data['workout_date'] = this.workoutDate;
     if (this.trainingPlans != null) {
       data['training_plans'] = this.trainingPlans!.toJson();
     }

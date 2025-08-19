@@ -170,38 +170,10 @@ class _EquipmentManagementPageState extends State<EquipmentManagementPage> {
                             ],
                           ),
                         ),
-                        const PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit, size: 16),
-                              SizedBox(width: 8),
-                              Text('Edit'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.delete, size: 16, color: Colors.red),
-                              const SizedBox(width: 8),
-                              Text('Delete', style: const TextStyle(color: Colors.red)),
-                            ],
-                          ),
-                        ),
                       ],
                       onSelected: (value) {
-                        switch (value) {
-                          case 'view':
-                            _showEquipmentDetails(equipment);
-                            break;
-                          case 'edit':
-                            // Implement edit functionality
-                            break;
-                          case 'delete':
-                            _confirmDelete(equipment);
-                            break;
+                        if (value == 'view') {
+                          _showEquipmentDetails(equipment);
                         }
                       },
                     ),
@@ -446,17 +418,6 @@ class _EquipmentManagementPageState extends State<EquipmentManagementPage> {
                           ),
                         ],
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          // Implement add equipment functionality
-                        },
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text('Add Equipment', style: TextStyle(color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -557,31 +518,6 @@ class _EquipmentManagementPageState extends State<EquipmentManagementPage> {
                             },
                           ),
                         ),
-            ),
-
-            // Pagination
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement previous page
-                    },
-                    icon: const Icon(Icons.chevron_left),
-                    label: const Text('Previous'),
-                  ),
-                  const Text('1'),
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement next page
-                    },
-                    icon: const Icon(Icons.chevron_right),
-                    label: const Text('Next'),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

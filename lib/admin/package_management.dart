@@ -109,54 +109,6 @@ class _PackageManagementPageState extends State<PackageManagementPage> {
                     ),
                   ),
                 ),
-                PopupMenuButton(
-                  icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'view',
-                      child: Row(
-                        children: [
-                          Icon(Icons.visibility, size: 16),
-                          SizedBox(width: 8),
-                          Text('View Details'),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit, size: 16),
-                          SizedBox(width: 8),
-                          Text('Edit'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.delete, size: 16, color: Colors.red),
-                          const SizedBox(width: 8),
-                          Text('Delete', style: const TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'view':
-                        _showPackageDetails(package);
-                        break;
-                      case 'edit':
-                        // Implement edit functionality
-                        break;
-                      case 'delete':
-                        _confirmDelete(package);
-                        break;
-                    }
-                  },
-                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -390,17 +342,6 @@ class _PackageManagementPageState extends State<PackageManagementPage> {
                           ),
                         ],
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          // Implement add package functionality
-                        },
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text('Add Package', style: TextStyle(color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -480,31 +421,6 @@ class _PackageManagementPageState extends State<PackageManagementPage> {
                             },
                           ),
                         ),
-            ),
-
-            // Pagination
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement previous page
-                    },
-                    icon: const Icon(Icons.chevron_left),
-                    label: const Text('Previous'),
-                  ),
-                  const Text('1'),
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement next page
-                    },
-                    icon: const Icon(Icons.chevron_right),
-                    label: const Text('Next'),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

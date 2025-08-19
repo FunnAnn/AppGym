@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../bottom_main/bottom.dart';
-import 'choose_equipment.dart';
+import 'at_home_plan_screen.dart'; 
+import 'at_gym_plan_screen.dart';
 
 class ChooseLocationScreen extends StatelessWidget {
   final String? goal;
@@ -15,7 +16,7 @@ class ChooseLocationScreen extends StatelessWidget {
         leading: BackButton(color: Colors.black),
         title: const Text(
           'Workout Location',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black), 
         ),
         centerTitle: true,
       ),
@@ -26,7 +27,14 @@ class ChooseLocationScreen extends StatelessWidget {
             _LocationCard(
               title: 'AT GYM',
               image: 'assets/images/gym.png',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AtGymPlanScreen(goal: goal, image: image),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
             _LocationCard(
@@ -36,10 +44,7 @@ class ChooseLocationScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChooseEquipmentScreen(
-                      goal: goal,
-                      image: image,
-                    ),
+                    builder: (_) => AtHomePlanScreen(goal: goal), // truyền goal
                   ),
                 );
               },
@@ -51,11 +56,11 @@ class ChooseLocationScreen extends StatelessWidget {
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
-            // Already on this page
+            Navigator.pushReplacementNamed(context, '/workout');
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button if needed
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
           } else if (index == 4) {

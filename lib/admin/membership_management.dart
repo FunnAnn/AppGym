@@ -224,16 +224,6 @@ class _MembershipManagementPageState extends State<MembershipManagementPage> {
                         ],
                       ),
                     ),
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit, size: 16),
-                          SizedBox(width: 8),
-                          Text('Edit'),
-                        ],
-                      ),
-                    ),
                   ],
                   onSelected: (value) {
                     switch (value) {
@@ -568,31 +558,6 @@ class _MembershipManagementPageState extends State<MembershipManagementPage> {
                             },
                           ),
                         ),
-            ),
-
-            // Pagination
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement previous page
-                    },
-                    icon: const Icon(Icons.chevron_left),
-                    label: const Text('Previous'),
-                  ),
-                  const Text('1'),
-                  TextButton.icon(
-                    onPressed: () {
-                      // Implement next page
-                    },
-                    icon: const Icon(Icons.chevron_right),
-                    label: const Text('Next'),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

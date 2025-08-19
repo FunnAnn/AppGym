@@ -9,6 +9,7 @@ import 'equipment_management.dart';
 import 'excercise_management.dart';
 import 'training_plan_management.dart';
 import 'chat_assistant.dart';
+import 'checkin_management.dart';
 
 class AdminLayout extends StatelessWidget {
   final Widget body;
@@ -155,7 +156,11 @@ class AdminLayout extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.qr_code_scanner_outlined, color: AppColors.pinkTheme),
                 title: Text('Checkins'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => CheckinManagementPage()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.fitness_center_outlined, color: AppColors.pinkTheme),

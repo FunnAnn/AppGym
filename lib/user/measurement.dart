@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/theme/app_colors.dart';
 import '../api_service/health_service.dart';
 import '../api_service/auth_service.dart';
 import 'dart:convert';
+import '/theme/app_colors.dart';
 
 class MeasurementScreen extends StatefulWidget {
   const MeasurementScreen({super.key});
@@ -92,20 +94,20 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Nền trắng
+      backgroundColor: Colors.white, 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pinkTheme,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           'Body Measurements',
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

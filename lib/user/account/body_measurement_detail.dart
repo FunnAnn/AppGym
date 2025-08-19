@@ -318,10 +318,11 @@ class _BodyMeasurementDetailScreenState extends State<BodyMeasurementDetailScree
           } else if (index == 1) {
             Navigator.pushReplacementNamed(context, '/calendar');
           } else if (index == 2) {
-            // Handle "Scan QR" button tap
-            // Example: showDialog(context: context, builder: (_) => ...);
+            showQRDialog(context);
           } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/package');
+          } else if (index == 4) {
+            Navigator.pushReplacementNamed(context, '/account');
           }
         },
       ),
